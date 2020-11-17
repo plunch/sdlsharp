@@ -383,12 +383,22 @@ namespace SDLSharp {
     );
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate int SDL_HitTest(
+    public delegate SDL_HitTestResult SDL_HitTest(
       SDL_WindowPtr window,
       /*const*/ Point* area,
       void* data
     );
 
+    public enum SDL_HitTestResult {
+      Normal,
+      Draggable,
+      ResizeTopLeft,
+      RezizeTop,
+      ResizeTopRight,
+      ResizeBottom,
+      ResizeBottomLeft,
+      ResizeLeft,
+    }
 
     static readonly uint WINDOWPOS_UNDEFINED = 0x1FFF0000u;
     static readonly uint WINDOWPOS_CENTERED = 0x2FFF0000u;
@@ -415,11 +425,7 @@ namespace SDLSharp {
 
     [StructLayout(LayoutKind.Sequential)]
     public struct SDL_MessageBoxColorScheme {
-      public SDL_MessageBoxColor i1;
-      public SDL_MessageBoxColor i2;
-      public SDL_MessageBoxColor i3;
-      public SDL_MessageBoxColor i4;
-      public SDL_MessageBoxColor i5;
+      public fixed byte bytes[5 * 3];
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -474,7 +480,7 @@ namespace SDLSharp {
     InputGrabbed = 0x100,
     InputFocus = 0x200,
     MouseFocus = 0x400,
-    FullscreenDesktop = 0x1|0x1000,
+    FullscreenDesktop = Fullscreen|0x1000,
     Foreign = 0x800,
     AllowHighDPI = 0x2000,
     MouseCapture = 0x4000,
@@ -493,32 +499,5 @@ namespace SDLSharp {
     LandscapeFlipped,
     Portrait,
     PortraitFlipped,
-  }
-
-  public enum WindowEventID {
-    None,
-    Shown,
-    Hidden,
-    Exposed,
-    Moved,
-    Resized,
-    SizeChanged,
-    Minimized,
-    Maximized,
-    Restored,
-    Enter,
-    Leave,
-    FocusGained,
-    FocusLost,
-    Close,
-    TakeFocus,
-    HitTest,
-  }
-
-  public enum DisplayEventID {
-    None,
-    Orientation,
-    Connected,
-    Disconnected,
   }
 }

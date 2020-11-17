@@ -274,12 +274,13 @@ namespace SDLSharp
       ErrorIfNegative(SDL_SetSurfacePalette(surface, p.palette));
     }
 
+    /*
     public unsafe void Save(string file) {
       Span<byte> utf8 = stackalloc byte[SL(file)];
       StringToUTF8(file, utf8);
       fixed (byte* ptr = &MemoryMarshal.GetReference(utf8))
         ErrorIfNegative(SDL_SaveBMP(surface, ptr));
-    }
+    }*/
 
     public static Surface Create(
         int width,
@@ -300,12 +301,13 @@ namespace SDLSharp
       return new Surface(ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormat(0, width, height, depth, format)));
     }
 
+    /*
     public static unsafe Surface From(string file) {
       Span<byte> utf8 = stackalloc byte[SL(file)];
       StringToUTF8(file, utf8);
       fixed (byte* ptr = &MemoryMarshal.GetReference(utf8))
         return new Surface(ErrorIfInvalid(SDL_LoadBMP(ptr)));
-    }
+    }*/
 
     public static unsafe Surface From(
         ReadOnlySpan<byte> data,

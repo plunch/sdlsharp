@@ -139,9 +139,6 @@ namespace SDLSharp {
       out byte b
     );
 
-    [DllImport("SDL2")]
-    public static extern SDL_SurfacePtr SDL_LoadBMP(/*constchar */ byte* file);
-
     /*
     [DllImport("SDL2")]
     public static extern SDL_SurfacePtr SDL_LoadBMP_RW(
@@ -171,12 +168,6 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_MUSTLOCK(
       SDL_SurfacePtr surface
-    );
-
-    [DllImport("SDL2")]
-    public static extern int SDL_SaveBMP(
-      SDL_SurfacePtr surface,
-      /*const char*/ byte* file
     );
 
     /*
