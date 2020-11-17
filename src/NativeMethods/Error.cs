@@ -25,6 +25,11 @@ namespace SDLSharp {
       return val;
     }
 
+    public static int ErrorIfZero(int val) {
+      if (val == 0)
+        throw GetError();
+      return val;
+    }
     public static UInt32 ErrorIfNonZero(UInt32 val) {
       if (val != 0)
         throw GetError();

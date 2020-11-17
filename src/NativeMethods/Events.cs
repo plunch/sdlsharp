@@ -25,9 +25,6 @@ namespace SDLSharp {
     public static extern SDL_Bool SDL_GetEventFilter(out SDL_EventFilter filter, out void* userdata);
 
     [DllImport("SDL2")]
-    public static extern byte SDL_GetEventState(uint type);
-
-    [DllImport("SDL2")]
     public static extern int SDL_GetNumTouchDevices();
 
     [DllImport("SDL2")]
