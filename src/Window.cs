@@ -199,7 +199,7 @@ namespace SDLSharp
       return new Window(new SDL_WindowPtr(ptr));
     }
 
-    public static Window CurrentlyGrabbingInput() {
+    public static Window? CurrentlyGrabbingInput() {
       var ptr = SDL_GetGrabbedWindow();
       if (ptr != IntPtr.Zero)
         return new Window(new SDL_WindowPtr(ptr));
@@ -207,7 +207,7 @@ namespace SDLSharp
         return null;
     }
 
-    public static Window Focused() {
+    public static Window? Focused() {
       var ptr = SDL_GetKeyboardFocus();
       if (ptr != IntPtr.Zero)
         return new Window(new SDL_WindowPtr(ptr));
