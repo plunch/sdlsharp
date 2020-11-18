@@ -55,7 +55,7 @@ namespace SDLSharp {
     public static extern int SDL_GetCurrentDisplayMode(int displayIndex, out SDL_DisplayMode mode);
 
     [DllImport("SDL2")]
-    public static extern /*const*/ char* SDL_GetCurrentVideoDriver();
+    public static extern /*constchar */ byte* SDL_GetCurrentVideoDriver();
 
     [DllImport("SDL2")]
     public static extern int SDL_GetDesktopDisplayMode(
@@ -108,7 +108,7 @@ namespace SDLSharp {
     public static extern int SDL_GetNumVideoDrivers();
 
     [DllImport("SDL2")]
-    public static extern /*const*/ char* SDL_GetVideoDriver(int index);
+    public static extern /*const char*/ byte* SDL_GetVideoDriver(int index);
 
     [DllImport("SDL2")]
     public static extern int SDL_GetWindowBordersSize(

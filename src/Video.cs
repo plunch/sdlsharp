@@ -8,6 +8,7 @@ namespace SDLSharp
 {
   public static class Video {
     public static IEnumerable<Display> Displays => Display.All();
+    public static VideoDrivers Drivers { get; } =  new VideoDrivers();
 
     public static unsafe void Init(string? driverName = null) {
       bool disableDrop = SDL.ShouldDisableDropAfterInit(InitFlags.Video);
