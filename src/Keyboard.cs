@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace SDLSharp
 {
-  public static class Keyboard {
-
-    public static bool IsKeyDown(Keycode key) {
-      return IsKeyDown(GetScancode(key));
+  public static class Keyboard
+  {
+    public static bool IsDown(Keycode key) {
+      return IsDown(GetScancode(key));
     }
 
-    public static bool IsKeyDown(Scancode scancode) {
+    public static bool IsDown(Scancode scancode) {
       return GetKeyboardState()[(int)scancode] != 0;
     }
 
@@ -84,5 +84,14 @@ namespace SDLSharp
 
     public static bool IsScreenKeyboardShown(Window window)
       => SDL_IsScreenKeyboardShown(window.handle) == SDL_Bool.True;
+
+    public static Window? FocusedWindow() {
+      var ptr = SDL_GetKeyboardFocus();
+      if (ptr != IntPtr.Zero)
+        return new Window(new SDL_WindowPtr(ptr));
+      else
+        return null;
+    }
+
   }
 }

@@ -207,14 +207,6 @@ namespace SDLSharp
         return null;
     }
 
-    public static Window? Focused() {
-      var ptr = SDL_GetKeyboardFocus();
-      if (ptr != IntPtr.Zero)
-        return new Window(new SDL_WindowPtr(ptr));
-      else
-        return null;
-    }
-
     public static int UndefinedPosition => WINDOWPOS_UNDEFINED;
     public static int CenteredPosition => WINDOWPOS_CENTERED;
 

@@ -34,16 +34,37 @@ namespace SDLSharp {
     public static extern uint SDL_GetGlobalMouseState(out int x, out int y);
 
     [DllImport("SDL2")]
+    public static extern uint SDL_GetGlobalMouseState(IntPtr x, out int y);
+
+    [DllImport("SDL2")]
+    public static extern uint SDL_GetGlobalMouseState(out int x, IntPtr y);
+
+    [DllImport("SDL2")]
     public static extern IntPtr SDL_GetMouseFocus();
 
     [DllImport("SDL2")]
     public static extern uint SDL_GetMouseState(out int x, out int y);
 
     [DllImport("SDL2")]
+    public static extern uint SDL_GetMouseState(IntPtr x, out int y);
+
+    [DllImport("SDL2")]
+    public static extern uint SDL_GetMouseState(out int x, IntPtr y);
+
+    [DllImport("SDL2")]
+    public static extern uint SDL_GetMouseState(IntPtr x, IntPtr y);
+
+    [DllImport("SDL2")]
     public static extern SDL_Bool SDL_GetRelativeMouseMode();
 
     [DllImport("SDL2")]
-    public static extern uint SDL_GetRelativeMouseMode(out int x, out int y);
+    public static extern uint SDL_GetRelativeMouseState(out int x, out int y);
+
+    [DllImport("SDL2")]
+    public static extern uint SDL_GetRelativeMouseState(IntPtr x, out int y);
+
+    [DllImport("SDL2")]
+    public static extern uint SDL_GetRelativeMouseState(out int x, IntPtr y);
 
     [DllImport("SDL2")]
     public static extern void SDL_SetCursor(SDL_CursorPtr cursor);
@@ -62,6 +83,9 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern int SDL_WarpMouseInWindow(SDL_WindowPtr window, int x, int y);
+
+    [DllImport("SDL2")]
+    public static extern int SDL_WarpMouseInWindow(IntPtr window, int x, int y);
   }
 
   class SDL_CursorPtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
