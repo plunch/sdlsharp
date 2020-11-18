@@ -400,8 +400,8 @@ namespace SDLSharp {
       ResizeLeft,
     }
 
-    static readonly uint WINDOWPOS_UNDEFINED = 0x1FFF0000u;
-    static readonly uint WINDOWPOS_CENTERED = 0x2FFF0000u;
+    internal static readonly int WINDOWPOS_UNDEFINED = 0x1FFF0000;
+    internal static readonly int WINDOWPOS_CENTERED = 0x2FFF0000;
 
     [StructLayout(LayoutKind.Sequential)]
     public struct SDL_DisplayMode {

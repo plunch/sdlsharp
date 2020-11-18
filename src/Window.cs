@@ -215,6 +215,9 @@ namespace SDLSharp
         return null;
     }
 
+    public static int UndefinedPosition => WINDOWPOS_UNDEFINED;
+    public static int CenteredPosition => WINDOWPOS_CENTERED;
+
     public unsafe static Window Create(string title, int x, int y, int w, int h, WindowFlags flags) {
       Span<byte> utf8 = stackalloc byte[Encoding.UTF8.GetByteCount(title)+1];
       var written = Encoding.UTF8.GetBytes(title, utf8);
