@@ -427,11 +427,6 @@ namespace SDLSharp {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct SDL_MessageBoxColor {
-      public byte r, g, b;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
     public struct SDL_MessageBoxColorScheme {
       public fixed byte bytes[5 * 3];
     }
@@ -440,8 +435,8 @@ namespace SDLSharp {
     public struct SDL_MessageBoxData {
       public UInt32 flags;
       public IntPtr window;
-      public /*const*/ char* title;
-      public /*const*/ char* message;
+      public /*const char*/ byte* title;
+      public /*const char*/ byte* message;
       public int numbuttons;
       public /*const*/ SDL_MessageBoxButtonData* buttons;
       public /*const*/ SDL_MessageBoxColorScheme* colorScheme;
@@ -470,8 +465,8 @@ namespace SDLSharp {
   }
 
   public enum SDL_MessageBoxButtonFlags {
-    ReturnKeyDefault = 0,
-    EscapeKeyDefault = 1,
+    ReturnKeyDefault = 1,
+    EscapeKeyDefault = 2,
   }
 
 
