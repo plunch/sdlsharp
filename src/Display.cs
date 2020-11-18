@@ -92,7 +92,7 @@ namespace SDLSharp
 
       public unsafe DisplayMode GetClosest(DisplayMode mode) {
         SDL_DisplayMode m;
-        m.format = mode.Format;
+        m.format = (uint)mode.Format;
         m.w = mode.Width;
         m.h = mode.Height;
         m.refresh_rate = mode.RefreshRate;

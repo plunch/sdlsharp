@@ -25,8 +25,8 @@ namespace SDLSharp
       get { return SDL_GetWindowFlags(handle); }
     }
 
-    public UInt32 PixelFormat {
-      get { return SDL_GetWindowPixelFormat(handle); }
+    public PixelDataFormat PixelFormat {
+      get { return (PixelDataFormat)SDL_GetWindowPixelFormat(handle); }
     }
 
     public unsafe string Title {
@@ -90,7 +90,7 @@ namespace SDLSharp
       }
       set {
         SDL_DisplayMode mode;
-        mode.format = value.Format;
+        mode.format = (uint)value.Format;
         mode.w = value.Width;
         mode.h = value.Height;
         mode.refresh_rate = value.RefreshRate;
