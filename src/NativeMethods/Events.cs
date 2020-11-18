@@ -96,6 +96,7 @@ namespace SDLSharp {
       Get,
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct SDL_Finger {
       public long id;
       public float x, y, pressure;
