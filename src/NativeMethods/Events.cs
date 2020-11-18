@@ -139,7 +139,7 @@ namespace SDLSharp {
     ControllerAxisMotion = 0x650,
     ControllerButtonDown,
     ControllerButtonUp,
-    ControllerDeviceAded,
+    ControllerDeviceAdded,
     ControllerDeviceRemoved,
     ControllerDeviceRemapped,
 
@@ -192,6 +192,8 @@ namespace SDLSharp {
     [FieldOffset(0)]
     public JoyAxisEvent jaxis;
     [FieldOffset(0)]
+    public JoyHatEvent jhat;
+    [FieldOffset(0)]
     public JoyBallEvent jball;
     [FieldOffset(0)]
     public JoyDeviceEvent jdevice;
@@ -202,7 +204,7 @@ namespace SDLSharp {
     [FieldOffset(0)]
     public ControllerDeviceEvent cdevice;
     [FieldOffset(0)]
-    public AudioDeviceEvent addevice;
+    public AudioDeviceEvent adevice;
     [FieldOffset(0)]
     public QuitEvent quit;
     [FieldOffset(0)]
@@ -219,12 +221,111 @@ namespace SDLSharp {
     public DropEvent drop;
     [FieldOffset(0)]
     fixed byte padding[56];
+
+    public override string ToString() {
+      switch(type) {
+        case EventType.Quit:
+          return this.quit.ToString();
+
+        case EventType.AppTerminating:
+        case EventType.AppLowMemory:
+        case EventType.AppWillEnterBackground:
+        case EventType.AppDidEnterBackground:
+        case EventType.AppWillEnterForeground:
+        case EventType.AppDidEnterForeground:
+          return  this.common.ToString();
+
+        case EventType.WindowEvent:
+          return this.window.ToString();
+        case EventType.SysWMEvent:
+          return this.syswm.ToString();
+
+        case EventType.KeyDown:
+        case EventType.KeyUp:
+          return this.keyboard.ToString();
+        case EventType.TextEditing:
+          return this.edit.ToString();
+        case EventType.TextInput:
+          return this.text.ToString();
+        case EventType.KeymapChanged:
+          return this.common.ToString();
+
+        case EventType.MouseMotion:
+          return this.motion.ToString();
+        case EventType.MouseButtonDown:
+        case EventType.MouseButtonUp:
+          return this.button.ToString();
+        case EventType.MouseWheel:
+          return this.wheel.ToString();
+
+        case EventType.JoyAxisMotion:
+          return this.jaxis.ToString();
+        case EventType.JoyBallMotion:
+          return this.jball.ToString();
+        case EventType.JoyHatMotion:
+          return this.jhat.ToString();
+        case EventType.JoyButtonDown:
+        case EventType.JoyButtonUp:
+          return this.button.ToString();
+        case EventType.JoyDeviceAdded:
+        case EventType.JoyDeviceRemoved:
+          return this.jdevice.ToString();
+
+        case EventType.ControllerAxisMotion:
+          return this.caxis.ToString();
+        case EventType.ControllerButtonDown:
+        case EventType.ControllerButtonUp:
+          return this.cbutton.ToString();
+        case EventType.ControllerDeviceAdded:
+        case EventType.ControllerDeviceRemoved:
+        case EventType.ControllerDeviceRemapped:
+          return this.cdevice.ToString();
+
+        case EventType.FingerDown:
+        case EventType.FingerUp:
+        case EventType.FingerMotion:
+          return this.tfinger.ToString();
+
+        case EventType.DollarGesture:
+        case EventType.DollarRecord:
+          return this.dgesture.ToString();
+        case EventType.MultiGesture:
+          return this.mgesture.ToString();
+
+        case EventType.ClipboardUpdate:
+          return this.common.ToString();
+
+        case EventType.DropFile:
+        case EventType.DropText:
+        case EventType.DropBegin:
+        case EventType.DropComplete:
+          return drop.ToString();
+
+        case EventType.AudioDeviceAdded:
+        case EventType.AudioDeviceRemoved:
+          return adevice.ToString();
+
+        case EventType.RenderTargetsReset:
+        case EventType.RenderDeviceReset:
+          return this.common.ToString();
+
+        default:
+          if (type >= EventType.UserEvent)
+            return user.ToString();
+          else
+            return $"[{type}ts={common.timestamp})]";
+      }
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
   public struct CommonEvent {
     public EventType type;
     public uint timestamp;
+
+    public override string ToString() {
+      return $"[{type}({timestamp})]";
+    }
   }
 
   public enum WindowEventType : byte {
@@ -255,6 +356,10 @@ namespace SDLSharp {
     public WindowEventType @event; 
     byte padding1, padding2, padding3;
     int data1, data2;
+
+    public override string ToString() {
+      return $"[{type}/{@event}(ts={timestamp},w={windowID}),data1={data1},data2={data2}]";
+    }
   }
   
   [StructLayout(LayoutKind.Sequential)]
@@ -265,7 +370,11 @@ namespace SDLSharp {
     public byte state;
     public byte repeat;
     byte padding2, padding3;
-    Keysym keysym;
+    public Keysym keysym;
+
+    public override string ToString() {
+      return $"[{type}/{keysym}(ts={timestamp},w={windowID}),state={state},{(repeat!=0?"repeat":"")}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -273,8 +382,19 @@ namespace SDLSharp {
     public EventType type;
     public uint timestamp;
     public uint windowID;
-    public fixed byte text[32];
+    fixed byte _text[32];
     public int start, length;
+
+    public string text {
+      get {
+        fixed (byte* b = _text)
+          return NativeMethods.UTF8ToString(b);
+      }
+    }
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp},w={windowID}),text={text},start={start},length={length}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -282,7 +402,18 @@ namespace SDLSharp {
     public EventType type;
     public uint timestamp;
     public uint windowID;
-    public fixed byte text[32];
+    fixed byte _text[32];
+
+    public string text {
+      get {
+        fixed (byte* b = _text)
+          return NativeMethods.UTF8ToString(b);
+      }
+    }
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp},w={windowID}),text={text}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -294,6 +425,10 @@ namespace SDLSharp {
     public uint state;
     public int x, y;
     public int xrel, yrel;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp},w={windowID}),which={which},state={state},xy=({x},{y}),rel=({xrel},{yrel})]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -305,6 +440,10 @@ namespace SDLSharp {
     public byte button, state, clicks;
     byte padding1;
     public int x, y;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp},w={windowID}),which={which},button={button},state={state},clicks={clicks}";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -316,6 +455,10 @@ namespace SDLSharp {
     public uint state;
     public int x, y;
     public uint direction;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp},w={windowID}),which={which},direction={direction},state={state},xy=({x},{y})]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -327,6 +470,10 @@ namespace SDLSharp {
     byte padding1, padding2, padding3;
     public short value;
     ushort padding4;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},axis={axis},value={value}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -337,6 +484,10 @@ namespace SDLSharp {
     public byte ball;
     byte padding1, padding2, padding3;
     public short xrel, yrel;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},ball={ball},rel=({xrel},{yrel})]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -346,6 +497,10 @@ namespace SDLSharp {
     public int which;
     public byte hat, value;
     byte padding1, padding2;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},hat={hat},value={value}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -355,6 +510,10 @@ namespace SDLSharp {
     public int which;
     public byte button, state;
     byte padding1, padding2;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},button={button},state={state}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -362,6 +521,10 @@ namespace SDLSharp {
     public EventType type;
     public uint timestamp;
     public int which;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -373,6 +536,10 @@ namespace SDLSharp {
     byte padding1, padding2, padding3;
     public short value;
     ushort padding4;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},axis={axis},value={value}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -382,6 +549,10 @@ namespace SDLSharp {
     public int which;
     public byte button, state;
     byte padding1, padding2;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},button={button},state={state}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -389,6 +560,10 @@ namespace SDLSharp {
     public EventType type;
     public uint timestamp;
     public int which;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -398,6 +573,10 @@ namespace SDLSharp {
     public uint which;
     public byte iscapture;
     byte padding1, padding2, padding3;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),which={which},{(iscapture != 0 ? "capture": "")}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -407,6 +586,10 @@ namespace SDLSharp {
     public long touchId;
     public long fingerId;
     public float x, y, dx, dy, pressure;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),touchId={touchId},fingerId={fingerId},xy=({x},{y}),delta=({dx},{dy}),pressure={pressure}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -417,6 +600,10 @@ namespace SDLSharp {
     public float dTheta, dDist, x, y;
     public ushort numFingers;
     ushort padding;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),touchId={touchId},dTheta={dTheta},dDist={dDist},xy=({x},{y})]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -427,27 +614,51 @@ namespace SDLSharp {
     public long gestureId;
     public uint numFingers;
     public float error, x, y;
+
+    public override string ToString() {
+      return $"[{type}(ts={timestamp}),touchId={touchId},gestureId={gestureId},numFingers={numFingers},error={error},xy=({x},{y})]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  public unsafe struct DropEvent {
+  public unsafe struct DropEvent : IDisposable {
     public EventType type;
     public uint timestamp;
-    byte* _file;
-    public string file => NativeMethods.UTF8ToString(this._file);
+    IntPtr _file;
+    public string file => NativeMethods.UTF8ToString((byte*)this._file);
     public uint windowId;
+
+    public void Dispose() {
+      var f = System.Threading.Interlocked.Exchange(ref _file, IntPtr.Zero);
+      if (f != IntPtr.Zero)
+        NativeMethods.SDL_free((void*)f);
+    }
+
+    public override string ToString() {
+      return $"[{type}({timestamp},w={windowId}),file={file}]";
+    }
   }
+
+  
 
   [StructLayout(LayoutKind.Sequential)]
   public struct QuitEvent {
     public EventType type;
     public uint timestamp;
+
+    public override string ToString() {
+      return $"[{type}({timestamp})]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
   public struct OSEvent {
     public EventType type;
     public uint timestamp;
+
+    public override string ToString() {
+      return $"[{type}({timestamp})]";
+    }
   }
   
   [StructLayout(LayoutKind.Sequential)]
@@ -457,6 +668,10 @@ namespace SDLSharp {
     public uint windowID;
     public int code;
     public IntPtr data1, data2;
+
+    public override string ToString() {
+      return $"[{type}({timestamp},w={windowID}),code={code},data1{data1},data2={data2}]";
+    }
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -464,5 +679,9 @@ namespace SDLSharp {
     public EventType type;
     public uint timestamp;
     public IntPtr msg;
+
+    public override string ToString() {
+      return $"[{type}({timestamp}),msg={msg}]";
+    }
   }
 }

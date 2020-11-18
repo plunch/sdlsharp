@@ -62,7 +62,11 @@ namespace SDLSharp {
         return ErrorIfNegative(SDL_PushEvent(ptr)) != 0;
     }
 
-    public static unsafe int PushEvents(Span<Event> events, EventType minType, EventType maxType) {
+    public static unsafe int PushEvents(
+      Span<Event> events,
+      EventType minType = EventType.FirstEvent,
+      EventType maxType = EventType.LastEvent
+    ) {
       fixed(Event* ptr = &MemoryMarshal.GetReference(events))
         return ErrorIfNegative(SDL_PeepEvents(ptr, events.Length, SDL_eventaction.Add, (uint)minType, (uint)maxType));
     }
