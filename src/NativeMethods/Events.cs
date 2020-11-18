@@ -455,11 +455,16 @@ namespace SDLSharp {
     public uint which;
     public uint state;
     public int x, y;
-    public uint direction;
+    public MouseWheelDirection direction;
 
     public override string ToString() {
       return $"[{type}(ts={timestamp},w={windowID}),which={which},direction={direction},state={state},xy=({x},{y})]";
     }
+  }
+
+  public enum MouseWheelDirection : uint {
+    Normal,
+    Flipped,
   }
 
   [StructLayout(LayoutKind.Sequential)]
