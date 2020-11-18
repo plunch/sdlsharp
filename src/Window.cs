@@ -131,6 +131,15 @@ namespace SDLSharp
       }
     }
 
+    public bool IsGrabbingInput {
+      get {
+        return SDL_GetWindowGrab(handle) == SDL_Bool.True;
+      }
+      set {
+        SDL_SetWindowGrab(handle, value ? SDL_Bool.True : SDL_Bool.False);
+      }
+    }
+
     public void Hide() {
       SDL_HideWindow(handle);
     }
@@ -190,7 +199,7 @@ namespace SDLSharp
       return new Window(new SDL_WindowPtr(ptr));
     }
 
-    public static Window CurrentlyGrabbed() {
+    public static Window CurrentlyGrabbingInput() {
       var ptr = SDL_GetGrabbedWindow();
       if (ptr != IntPtr.Zero)
         return new Window(new SDL_WindowPtr(ptr));
