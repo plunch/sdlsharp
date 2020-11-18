@@ -28,7 +28,7 @@ namespace SDLSharp
     }
 
     public static unsafe string GetKeyName(Keycode key) {
-      return UTF8ToString(SDL_GetKeyName(key));
+      return UTF8ToString(SDL_GetKeyName(key)) ?? "";
     }
 
     public static unsafe Keycode GetKeycode(string name) {
@@ -38,7 +38,7 @@ namespace SDLSharp
       fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
         key = SDL_GetKeyFromName(ptr);
       if (key == Keycode.Unknown)
-        throw GetError();
+        Throw();
       return key;
     }
 
@@ -47,7 +47,7 @@ namespace SDLSharp
     }
 
     public static unsafe string GetScancodeName(Scancode scancode) {
-      return UTF8ToString(SDL_GetScancodeName(scancode));
+      return UTF8ToString(SDL_GetScancodeName(scancode)) ?? "";
     }
 
     public static unsafe Scancode GetScancode(string name) {
@@ -57,7 +57,7 @@ namespace SDLSharp
       fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
         scancode = SDL_GetScancodeFromName(ptr);
       if (scancode ==  Scancode.Unknown)
-        throw GetError();
+        Throw();
       return scancode;
     }
 

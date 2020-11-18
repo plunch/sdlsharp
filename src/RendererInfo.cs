@@ -15,7 +15,7 @@ namespace SDLSharp
       this.Formats = new RendererInfoFormats(this);
     }
 
-    public unsafe string Name => UTF8ToString(info.name);
+    public unsafe string Name => UTF8ToString(info.name) ?? "";
     public RendererFlags Flags => info.flags;
     public int MaxTextureWidth => info.max_texture_width;
     public int MaxTextureHeight => info.max_texture_height;

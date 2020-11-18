@@ -388,7 +388,7 @@ namespace SDLSharp {
     public string text {
       get {
         fixed (byte* b = _text)
-          return NativeMethods.UTF8ToString(b);
+          return NativeMethods.UTF8ToString(b) ?? "";
       }
     }
 
@@ -407,7 +407,7 @@ namespace SDLSharp {
     public string text {
       get {
         fixed (byte* b = _text)
-          return NativeMethods.UTF8ToString(b);
+          return NativeMethods.UTF8ToString(b) ?? "";
       }
     }
 
@@ -625,7 +625,7 @@ namespace SDLSharp {
     public EventType type;
     public uint timestamp;
     IntPtr _file;
-    public string file => NativeMethods.UTF8ToString((byte*)this._file);
+    public string? file => NativeMethods.UTF8ToString((byte*)this._file);
     public uint windowId;
 
     public void Dispose() {

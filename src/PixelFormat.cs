@@ -104,10 +104,10 @@ namespace SDLSharp {
       format.Dispose();
     }
 
-    public static unsafe string GetName(uint dataFormat) {
+    public static unsafe string? GetName(uint dataFormat) {
       return UTF8ToString(SDL_GetPixelFormatName(dataFormat));
     }
-    public static unsafe string GetName(PixelDataFormat dataFormat) {
+    public static unsafe string? GetName(PixelDataFormat dataFormat) {
       return GetName((uint)dataFormat);
     }
 

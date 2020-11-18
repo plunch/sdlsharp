@@ -11,7 +11,7 @@ namespace SDLSharp
 
     public int Count => SDL_GetNumVideoDrivers();
 
-    public unsafe string Current {
+    public unsafe string? Current {
       get {
         return UTF8ToString(SDL_GetCurrentVideoDriver());
       }
@@ -19,7 +19,7 @@ namespace SDLSharp
 
     public unsafe string this[int index] {
       get {
-        return UTF8ToString(SDL_GetVideoDriver(index));
+        return UTF8ToString(SDL_GetVideoDriver(index)) ?? "";
       }
     }
     

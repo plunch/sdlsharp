@@ -25,7 +25,7 @@ namespace SDLSharp
 
     public unsafe string Name {
       get {
-        return ErrorIfNull(UTF8ToString(SDL_GetDisplayName(index)));
+        return ErrorIfNull(UTF8ToString(SDL_GetDisplayName(index)))!;
       }
     }
 

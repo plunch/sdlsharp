@@ -10,7 +10,7 @@ namespace SDLSharp
     public static unsafe string GetText() {
       var bytes = SDL_GetClipboardText();
       try {
-        return ErrorIfNull(UTF8ToString(bytes));
+        return ErrorIfNull(UTF8ToString(bytes))!;
       } finally {
         if (bytes != null)
           SDL_free(bytes);

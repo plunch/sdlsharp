@@ -12,7 +12,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern void SDL_free(void* ptr);
 
-    public static string UTF8ToString(byte* utf8) {
+    public static string? UTF8ToString(byte* utf8) {
       if (utf8 == null)
         return null;
       int c = -1;

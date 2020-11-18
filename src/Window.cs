@@ -31,7 +31,7 @@ namespace SDLSharp
 
     public unsafe string Title {
       get {
-        return UTF8ToString(SDL_GetWindowTitle(handle));
+        return UTF8ToString(SDL_GetWindowTitle(handle)) ?? "";
       }
       set {
         Span<byte> utf8 = stackalloc byte[Encoding.UTF8.GetByteCount(value)+1];
@@ -85,7 +85,7 @@ namespace SDLSharp
         if (SDL_GetWindowDisplayMode(handle, out mode) == 0) {
           return new DisplayMode(mode);
         } else {
-          throw GetError();
+          throw GetError2();
         }
       }
       set {
