@@ -22,12 +22,12 @@ namespace SDLSharp {
     }
 
     public static int SL(string str) {
-      return Encoding.UTF8.GetByteCount(str);
+      return Encoding.UTF8.GetByteCount(str) + 1; // Null terminator
     }
 
     public static void StringToUTF8(string str, in Span<byte> utf8) {
 #if DEBUG
-      System.Diagnostics.Debug.Assert(utf8.Length < Encoding.UTF8.GetByteCount(str));
+      System.Diagnostics.Debug.Assert(utf8.Length > Encoding.UTF8.GetByteCount(str));
 #endif
       var written = Encoding.UTF8.GetBytes(str, utf8);
       utf8[written] = 0;
