@@ -7,7 +7,7 @@ namespace SDLSharp
 {
   public class Renderer : IDisposable {
 
-    public static RenderDrivers Drivers => new RenderDrivers();
+    public static RenderDrivers Drivers { get; } = new RenderDrivers();
 
     readonly internal SDL_RendererPtr renderer;
 

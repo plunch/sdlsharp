@@ -8,21 +8,25 @@ using static SDLSharp.NativeMethods;
 namespace SDLSharp
 {
   public class RendererInfo {
-    private SDL_RendererInfo info;
+    private readonly SDL_RendererInfo info;
 
     internal RendererInfo(SDL_RendererInfo info) {
       this.info = info;
+      this.Formats = new RendererInfoFormats(this);
     }
 
     public unsafe string Name => UTF8ToString(info.name);
     public RendererFlags Flags => info.flags;
     public int MaxTextureWidth => info.max_texture_width;
     public int MaxTextureHeight => info.max_texture_height;
+    public RendererInfoFormats Formats { get; }
 
-    public unsafe RendererInfoFormats Formats => new RendererInfoFormats(this);
+    public override string ToString() {
+      return $"{{name={Name},Flags={Flags},MaxTextureWidth={MaxTextureWidth},MaxTextureHeight={MaxTextureHeight},formats=[{Formats.Count}]}}";
+    }
 
-    public struct RendererInfoFormats: IReadOnlyList<uint> {
-      RendererInfo i;
+    public readonly struct RendererInfoFormats: IReadOnlyList<uint> {
+      readonly RendererInfo i;
 
       internal RendererInfoFormats(RendererInfo i) {
         this.i = i;
