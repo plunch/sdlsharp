@@ -4,6 +4,26 @@ using System.Runtime.InteropServices;
 
 namespace SDLSharp {
   public static class SDL {
+    public static void Init(InitFlags flags = InitFlags.Nothing) {
+      bool disableDrop = ShouldDisableDropAfterInit(flags);
+      ErrorIfNegative(SDL_Init(flags));
+      if (disableDrop) DisableDropEvents();
+    }
+
+    public static void InitSubSystem(InitFlags flags) {
+      bool disableDrop = ShouldDisableDropAfterInit(flags);
+      ErrorIfNegative(SDL_InitSubSystem(flags));
+      if (disableDrop) DisableDropEvents();
+    }
+
+    public static void Quit() {
+      SDL_Quit();
+    }
+
+    public static void QuitSubSystem(InitFlags flags) {
+      SDL_QuitSubSystem(flags);
+    }
+
     public static bool PollEvent(out Event ev) {
       return SDL_PollEvent(out ev) != 0;
     }
@@ -46,7 +66,7 @@ namespace SDLSharp {
       => SDL_QuitRequested() == SDL_Bool.True;
 
     public static IgnoredEvents IgnoreEvent => new IgnoredEvents();
-    public struct IgnoredEvents {
+    public class IgnoredEvents {
       public bool this[EventType type] {
         get {
           return SDL_EventState((uint)type, -1) == 0;
@@ -74,6 +94,31 @@ namespace SDLSharp {
     public static uint RegisterEvents(int count) {
       return SDL_RegisterEvents(count);
     }
+
+    static internal bool ShouldDisableDropAfterInit(InitFlags flags) {
+      var initsEvent
+        = InitFlags.Video
+        | InitFlags.Joystick
+        | InitFlags.GameController
+        | InitFlags.Events
+      ;
+
+      if (SDL_WasInit(InitFlags.Events) != 0)
+        return false;
+
+      if ((flags & initsEvent) != InitFlags.Nothing)
+        return false;
+
+      return true;
+    }
+
+    static internal void DisableDropEvents() {
+      SDL.IgnoreEvent[EventType.DropFile] = true;
+      SDL.IgnoreEvent[EventType.DropText] = true;
+      SDL.IgnoreEvent[EventType.DropBegin] = true;
+      SDL.IgnoreEvent[EventType.DropComplete] = true;
+    }
+
   }
 
   public enum EventState {

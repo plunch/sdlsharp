@@ -34,6 +34,7 @@ namespace SDLSharp {
 
   [Flags]
   public enum InitFlags : uint {
+    Nothing = 0,
     Timer = 0x1,
     Audio = 0x10,
     Video = 0x20,

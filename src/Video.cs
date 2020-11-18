@@ -2,22 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using static SDLSharp.NativeMethods;
+using System.Runtime.InteropServices;
 
 namespace SDLSharp
 {
   public static class Video {
     public static IEnumerable<Display> Displays => Display.All();
 
-    public static unsafe void Init() {
-      ErrorIfNegative(SDL_VideoInit(null));
-    }
-
-    public static unsafe void Init(string driverName) {
-      Span<byte> utf8 = stackalloc byte[Encoding.UTF8.GetByteCount(driverName)+1];
-      var written = Encoding.UTF8.GetBytes(driverName, utf8);
-      utf8[written] = 0;
-      fixed (byte* utf8driver = &System.Runtime.InteropServices.MemoryMarshal.GetReference(utf8))
-        ErrorIfNegative(SDL_VideoInit(utf8driver));
+    public static unsafe void Init(string? driverName = null) {
+      bool disableDrop = SDL.ShouldDisableDropAfterInit(InitFlags.Video);
+      if (driverName != null) {
+        Span<byte> buf = stackalloc byte[SL(driverName)];
+        StringToUTF8(driverName, buf);
+        fixed(byte* ptr = &MemoryMarshal.GetReference(buf))
+          ErrorIfNegative(SDL_VideoInit(ptr));
+      } else {
+        ErrorIfNegative(SDL_VideoInit(null));
+      }
+      if (disableDrop) SDL.DisableDropEvents();
     }
 
     public static void Quit() {
