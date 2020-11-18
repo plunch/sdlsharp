@@ -373,7 +373,7 @@ namespace SDLSharp {
     public Keysym keysym;
 
     public override string ToString() {
-      return $"[{type}/{keysym}(ts={timestamp},w={windowID}),state={state},{(repeat!=0?"repeat":"")}]";
+      return $"[{type}={keysym}(ts={timestamp},w={windowID}),state={state}{(repeat!=0?",repeat":"")}]";
     }
   }
 
@@ -575,7 +575,7 @@ namespace SDLSharp {
     byte padding1, padding2, padding3;
 
     public override string ToString() {
-      return $"[{type}(ts={timestamp}),which={which},{(iscapture != 0 ? "capture": "")}]";
+      return $"[{type}(ts={timestamp}),which={which}{(iscapture != 0 ? ",capture": "")}]";
     }
   }
 

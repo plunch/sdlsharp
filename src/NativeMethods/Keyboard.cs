@@ -58,12 +58,17 @@ namespace SDLSharp {
   public struct Keysym {
     public Scancode scancode;
     public Keycode keycode;
-    public ushort mod;
+    public Keymod mod;
     uint unused;
+
+    public override string ToString() {
+      string md = mod != Keymod.None ? $"{mod}+" : "";
+      return $"{{{mod}+{keycode}|{scancode}}}";
+    }
   }
 
   [Flags]
-  public enum Keymod
+  public enum Keymod : ushort
   {
     None = 0,
     LeftShift = 0x1,
