@@ -367,7 +367,15 @@ namespace SDLSharp {
       UInt32 flags,
       /*const char*/ byte* title,
       /*const char*/ byte* message,
-        SDL_WindowPtr window
+      SDL_WindowPtr window
+    );
+
+    [DllImport("SDL2")]
+    public static extern int SDL_ShowSimpleMessageBox(
+      UInt32 flags,
+      /*const char*/ byte* title,
+      /*const char*/ byte* message,
+      IntPtr window
     );
 
     [DllImport("SDL2")]
@@ -461,9 +469,16 @@ namespace SDLSharp {
     }
   }
 
-  public enum SDL_MessageBoxButtonFlags : UInt32 {
-    ReturnkeyDefault = 0,
-    EscapekeyDefault = 1,
+  public enum SDL_MessageBoxButtonFlags {
+    ReturnKeyDefault = 0,
+    EscapeKeyDefault = 1,
+  }
+
+
+  public enum MessageBoxFlags : uint {
+    Error = 0x10,
+    Warning = 0x20,
+    Information = 0x40,
   }
 
   [Flags]
