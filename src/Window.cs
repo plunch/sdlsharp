@@ -185,13 +185,21 @@ namespace SDLSharp
       handle.Dispose();
     }
 
-    public static Window FromID(UInt32 id) {
+    public static Window FromID(uint id) {
       var ptr = ErrorIfNull(SDL_GetWindowFromID(id));
       return new Window(new SDL_WindowPtr(ptr));
     }
 
-    public static Window CurrentlyGrabbed(UInt32 id) {
+    public static Window CurrentlyGrabbed() {
       var ptr = SDL_GetGrabbedWindow();
+      if (ptr != IntPtr.Zero)
+        return new Window(new SDL_WindowPtr(ptr));
+      else
+        return null;
+    }
+
+    public static Window Focused() {
+      var ptr = SDL_GetKeyboardFocus();
       if (ptr != IntPtr.Zero)
         return new Window(new SDL_WindowPtr(ptr));
       else
