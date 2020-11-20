@@ -6,49 +6,62 @@ using static SDLSharp.NativeMethods;
 using System.Runtime.InteropServices;
 
 namespace SDLSharp {
-  public class Palette : IDisposable, IReadOnlyList<Color> {
-    internal readonly SDL_PalettePtr palette;
+  public unsafe class Palette : SafeHandle, IReadOnlyList<Color> {
 
-    public Palette(int count) {
-      this.palette = ErrorIfInvalid(SDL_AllocPalette(count));
+    private SDL_Palette* ptr {
+      get {
+        if (IsInvalid) throw new ObjectDisposedException(nameof(Palette));
+        return (SDL_Palette*)handle;
+      }
     }
 
-    internal Palette(SDL_PalettePtr ptr) {
-      this.palette = ptr;
+    private Palette() : base(IntPtr.Zero, true) {
+    }
+
+    internal Palette(IntPtr ptr, bool owned) : base(IntPtr.Zero, owned) {
+      SetHandle(ptr);
+    }
+
+    public Palette(int count) :this() {
+      var palette = ErrorIfInvalid(SDL_AllocPalette(count));
+      SetHandle(palette.handle);
+      palette.SetHandle(IntPtr.Zero);
     }
 
     public unsafe int Count {
       get {
-        var ptr = (SDL_Palette*)palette.DangerousGetHandle();
         return ptr->ncolors;
       }
     }
 
-    public unsafe Color this[int index] {
+    public Color this[int index] {
       get {
-        var ptr = (SDL_Palette*)palette.DangerousGetHandle();
         if (index < 0 || index > ptr->ncolors)
           throw new IndexOutOfRangeException();
         return ptr->colors[index];
       }
       set{
-        var ptr = (SDL_Palette*)palette.DangerousGetHandle();
+        if (index < 0 || index > ptr->ncolors)
+          throw new IndexOutOfRangeException();
+        ptr->colors[index] = value;
       }
     }
 
-    public unsafe void CopyFrom(ReadOnlySpan<Color> colors, int start, int length) {
+    public void CopyFrom(ReadOnlySpan<Color> colors, int start, int length) {
       if (start + length > colors.Length)
         throw new IndexOutOfRangeException();
 
       fixed(Color* ptr = &MemoryMarshal.GetReference(colors)) {
-        SDL_SetPaletteColors(palette, ptr, start, length);
+        SDL_SetPaletteColors(this, ptr, start, length);
       }
     }
 
-    public void Dispose() {
-      palette.Dispose();
-    }
+    public override bool IsInvalid => handle == IntPtr.Zero;
 
+    override protected bool ReleaseHandle() {
+      NativeMethods.SDL_FreePalette(this.handle);
+      return true;
+    }
 
     IEnumerable<Color> Enumerate() {
       int idx = 0;

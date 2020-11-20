@@ -5,12 +5,12 @@ namespace SDLSharp {
   static unsafe partial class NativeMethods {
 
     [DllImport("SDL2")]
-    public static extern SDL_PixelFormatPtr SDL_AllocFormat(
+    public static extern PixelFormat SDL_AllocFormat(
       UInt32 pixel_format
     );
 
     [DllImport("SDL2")]
-    public static extern SDL_PalettePtr SDL_AllocPalette(
+    public static extern Palette SDL_AllocPalette(
       int ncolors
     );
 
@@ -38,7 +38,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern void SDL_GetRGB(
       UInt32 pixel,
-      SDL_PixelFormatPtr format,
+      PixelFormat format,
       out byte r,
       out byte g,
       out byte b
@@ -47,7 +47,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern void SDL_GetRGBA(
       UInt32 pixel,
-      SDL_PixelFormatPtr format,
+      PixelFormat format,
       out byte r,
       out byte g,
       out byte b,
@@ -56,7 +56,7 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern UInt32 SDL_MapRGB(
-      SDL_PixelFormatPtr format,
+      PixelFormat format,
       byte r,
       byte g,
       byte b
@@ -64,7 +64,7 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern UInt32 SDL_MapRGBA(
-      SDL_PixelFormatPtr format,
+      PixelFormat format,
       byte r,
       byte g,
       byte b,
@@ -92,7 +92,7 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern int SDL_SetPaletteColors(
-      SDL_PalettePtr palette,
+      Palette palette,
       /*const*/ Color* colors,
       int firstcolor,
       int ncolors
@@ -100,8 +100,8 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern int SDL_SetPixelFormatPalette(
-      SDL_PixelFormatPtr format,
-      SDL_PalettePtr palette
+      PixelFormat format,
+      Palette palette
     );
 
     [StructLayout(LayoutKind.Sequential)]
@@ -123,34 +123,6 @@ namespace SDLSharp {
       public Color* colors;
       private UInt32 version;
       private int refcount;
-    }
-  }
-
-  class SDL_PixelFormatPtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
-    private SDL_PixelFormatPtr() : base(true) {
-    }
-
-    public SDL_PixelFormatPtr(IntPtr ptr) : base(false) {
-      SetHandle(ptr);
-    }
-
-    override protected bool ReleaseHandle() {
-      NativeMethods.SDL_FreeFormat(this.handle);
-      return true;
-    }
-  }
-
-  class SDL_PalettePtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
-    private SDL_PalettePtr() : base(true) {
-    }
-
-    public SDL_PalettePtr(IntPtr ptr) : base(false) {
-      SetHandle(ptr);
-    }
-
-    override protected bool ReleaseHandle() {
-      NativeMethods.SDL_FreePalette(this.handle);
-      return true;
     }
   }
 

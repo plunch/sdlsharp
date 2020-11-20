@@ -83,12 +83,12 @@ namespace SDLSharp
       => SDL_HasScreenKeyboardSupport() == SDL_Bool.True;
 
     public static bool IsScreenKeyboardShown(Window window)
-      => SDL_IsScreenKeyboardShown(window.handle) == SDL_Bool.True;
+      => SDL_IsScreenKeyboardShown(window) == SDL_Bool.True;
 
     public static Window? FocusedWindow() {
       var ptr = SDL_GetKeyboardFocus();
       if (ptr != IntPtr.Zero)
-        return new Window(new SDL_WindowPtr(ptr));
+        return new Window(ptr, false);
       else
         return null;
     }

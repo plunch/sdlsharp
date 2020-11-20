@@ -14,20 +14,20 @@ namespace SDLSharp {
     );
 
     [DllImport("SDL2")]
-    public static extern SDL_RendererPtr SDL_CreateRenderer(
-      SDL_WindowPtr window,
+    public static extern Renderer SDL_CreateRenderer(
+      Window window,
       int index,
       RendererFlags flags
     );
 
     [DllImport("SDL2")]
-    public static extern SDL_RendererPtr SDL_CreateSoftwareRenderer(
+    public static extern Renderer SDL_CreateSoftwareRenderer(
       Surface surface
     );
 
     [DllImport("SDL2")]
-    public static extern SDL_TexturePtr SDL_CreateTexture(
-      SDL_RendererPtr renderer,
+    public static extern Texture SDL_CreateTexture(
+      Renderer renderer,
       UInt32 format,
       TextureAccess access,
       int w,
@@ -35,8 +35,8 @@ namespace SDLSharp {
     );
 
     [DllImport("SDL2")]
-    public static extern SDL_TexturePtr SDL_CreateTextureFromSurface(
-      SDL_RendererPtr renderer,
+    public static extern Texture SDL_CreateTextureFromSurface(
+      Renderer renderer,
       Surface surface
     );
 
@@ -55,13 +55,13 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern int SDL_GetRenderDrawBlendMode(
-      SDL_RendererPtr renderer,
+      Renderer renderer,
       out BlendMode blendMode
     );
 
     [DllImport("SDL2")]
     public static extern int SDL_GetRenderDrawColor(
-      SDL_RendererPtr renderer,
+      Renderer renderer,
       out byte r,
       out byte g,
       out byte b,
@@ -75,36 +75,36 @@ namespace SDLSharp {
     );
 
     [DllImport("SDL2")]
-    public static extern IntPtr SDL_GetRenderTarget(SDL_RendererPtr renderer);
+    public static extern IntPtr SDL_GetRenderTarget(Renderer renderer);
 
     [DllImport("SDL2")]
     public static extern int SDL_GetRendererInfo(
-      SDL_RendererPtr renderer,
+      Renderer renderer,
     out SDL_RendererInfo info
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_GetRendererOutputSize(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     out int w,
     out int h
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_GetTextureAlphaMod(
-    SDL_TexturePtr texture,
+    Texture texture,
     out byte alpha
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_GetTextureBlendMode(
-    SDL_TexturePtr texture,
+    Texture texture,
     out BlendMode blendMode
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_GetTextureColorMod(
-    SDL_TexturePtr texture,
+    Texture texture,
     out byte r,
     out byte g,
     out byte b
@@ -112,48 +112,175 @@ namespace SDLSharp {
 
   [DllImport("SDL2")]
   public static extern int SDL_LockTexture(
-    SDL_TexturePtr texture,
-    /*const*/ Rect* rect,
-    void** pixels,
+    Texture texture,
+    in Rect rect,
+    out void* pixels,
     out int pitch
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_QueryTexture(
-    SDL_TexturePtr texture,
-    UInt32* format,
-    TextureAccess* access,
-    int* w,
-    int* h
+    Texture texture,
+    out UInt32 format,
+    out TextureAccess access,
+    out int w,
+    out int h
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_QueryTexture(
+    Texture texture,
+    out UInt32 format,
+    IntPtr access,
+    IntPtr w,
+    IntPtr h
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_QueryTexture(
+    Texture texture,
+    IntPtr format,
+    IntPtr access,
+    out int w,
+    out int h
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_QueryTexture(
+    Texture texture,
+    IntPtr format,
+    IntPtr access,
+    IntPtr w,
+    out int h
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_QueryTexture(
+    Texture texture,
+    IntPtr format,
+    IntPtr access,
+    out int w,
+    IntPtr h
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_QueryTexture(
+    Texture texture,
+    IntPtr format,
+    out TextureAccess access,
+    IntPtr w,
+    IntPtr h
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderClear(
-    SDL_RendererPtr renderer
+    Renderer renderer
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderCopy(
-    SDL_RendererPtr renderer,
-    SDL_TexturePtr texture,
-    /*const*/ Rect* srcrect,
-    /*const*/ Rect* dstrect
+    Renderer renderer,
+    Texture texture,
+    in Rect srcrect,
+    in Rect dstrect
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopy(
+    Renderer renderer,
+    Texture texture,
+    in Rect srcrect,
+    IntPtr dstrect
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopy(
+    Renderer renderer,
+    Texture texture,
+    IntPtr srcrect,
+    in Rect dstrect
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderCopyEx(
-    SDL_RendererPtr renderer,
-    SDL_TexturePtr texture,
-    /*const*/ Rect* srcrect,
-    /*const*/ Rect* dstrect,
+    Renderer renderer,
+    Texture texture,
+    in Rect srcrect,
+    in Rect dstrect,
     double angle,
-    /*const*/ Point* center,
+    in Point center,
+    RendererFlip flip
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopyEx(
+    Renderer renderer,
+    Texture texture,
+    IntPtr srcrect,
+    in Rect dstrect,
+    double angle,
+    in Point center,
+    RendererFlip flip
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopyEx(
+    Renderer renderer,
+    Texture texture,
+    in Rect srcrect,
+    IntPtr dstrect,
+    double angle,
+    in Point center,
+    RendererFlip flip
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopyEx(
+    Renderer renderer,
+    Texture texture,
+    in Rect srcrect,
+    in Rect dstrect,
+    double angle,
+    IntPtr center,
+    RendererFlip flip
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopyEx(
+    Renderer renderer,
+    Texture texture,
+    IntPtr srcrect,
+    in Rect dstrect,
+    double angle,
+    IntPtr center,
+    RendererFlip flip
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopyEx(
+    Renderer renderer,
+    Texture texture,
+    in Rect srcrect,
+    IntPtr dstrect,
+    double angle,
+    IntPtr center,
+    RendererFlip flip
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderCopyEx(
+    Renderer renderer,
+    Texture texture,
+    IntPtr srcrect,
+    IntPtr dstrect,
+    double angle,
+    IntPtr center,
     RendererFlip flip
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderDrawLine(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     int x1,
     int y1,
     int x2,
@@ -162,96 +289,96 @@ namespace SDLSharp {
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderDrawLines(
-    SDL_RendererPtr renderer,
-    /*const*/ Point* points,
+    Renderer renderer,
+    Point* points,
     int count
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderDrawPoint(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     int x,
     int y
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderDrawPoints(
-    SDL_RendererPtr renderer,
-    /*const*/ Point* points,
+    Renderer renderer,
+    Point* points,
     int count
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderDrawRect(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rect
+    Renderer renderer,
+    in Rect rect
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderDrawRects(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rects,
+    Renderer renderer,
+    Rect* rects,
     int count
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderFillRect(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rect
+    Renderer renderer,
+    in Rect rect
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderFillRects(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rects,
+    Renderer renderer,
+    Rect* rects,
     int count
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_RenderGetClipRect(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     out Rect rect
   );
 
   [DllImport("SDL2")]
   public static extern SDL_Bool SDL_RenderGetIntegerScale(
-    SDL_RendererPtr renderer
+    Renderer renderer
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_RenderGetLogicalSize(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     out int w,
     out int h
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_RenderGetScale(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     out float scaleX,
     out float scaleY
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_RenderGetViewport(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     out Rect rect
   );
 
   [DllImport("SDL2")]
   public static extern SDL_Bool SDL_RenderIsClipEnabled(
-    SDL_RendererPtr renderer
+    Renderer renderer
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_RenderPresent(
-    SDL_RendererPtr renderer
+    Renderer renderer
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderReadPixels(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rect,
+    Renderer renderer,
+    in Rect rect,
     UInt32 format,
     void* pixels,
     int pitch
@@ -259,50 +386,56 @@ namespace SDLSharp {
   
   [DllImport("SDL2")]
   public static extern int SDL_RenderSetClipRect(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rect
+    Renderer renderer,
+    in Rect rect
+  );
+
+  [DllImport("SDL2")]
+  public static extern int SDL_RenderSetClipRect(
+    Renderer renderer,
+    IntPtr zero
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderSetIntegerScale(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     SDL_Bool enable
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderSetLogicalSize(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     int w,
     int h
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderSetScale(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     float scaleX,
     float scaleY
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_RenderSetViewport(
-    SDL_RendererPtr renderer,
-    /*const*/ Rect* rect
+    Renderer renderer,
+    in Rect rect
   );
 
   [DllImport("SDL2")]
   public static extern SDL_Bool SDL_RenderTargetSupported(
-    SDL_RendererPtr renderer
+    Renderer renderer
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_SetRenderDrawBlendMode(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     BlendMode blendMode
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_SetRenderDrawColor(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     byte r,
     byte g,
     byte b,
@@ -311,31 +444,31 @@ namespace SDLSharp {
 
   [DllImport("SDL2")]
   public static extern int SDL_SetRenderTarget(
-    SDL_RendererPtr renderer,
-    SDL_TexturePtr texture
+    Renderer renderer,
+    Texture texture
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_SetRenderTarget(
-    SDL_RendererPtr renderer,
+    Renderer renderer,
     IntPtr texture
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_SetTextureAlphaMod(
-    SDL_TexturePtr texture,
+    Texture texture,
     byte alpha
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_SetTextureBlendMode(
-    SDL_TexturePtr texture,
+    Texture texture,
     BlendMode blendMode
   );
 
   [DllImport("SDL2")]
   public static extern int SDL_SetTextureColorMod(
-    SDL_TexturePtr texture,
+    Texture texture,
     byte r,
     byte g,
     byte b
@@ -343,26 +476,26 @@ namespace SDLSharp {
 
   [DllImport("SDL2")]
   public static extern void SDL_UnlockTexture(
-    SDL_TexturePtr texture
+    Texture texture
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_UpdateTexture(
-    SDL_TexturePtr texture,
-    /*const*/ Rect* rect,
-    /*const*/ void* pixels,
+    Texture texture,
+    in Rect rect,
+    in byte pixels,
     int pitch
   );
 
   [DllImport("SDL2")]
   public static extern void SDL_UpdateYUVTexture(
-    SDL_TexturePtr texture,
-    /*const*/ Rect* rect,
-    /*const*/ byte* Yplane,
+    Texture texture,
+    in Rect rect,
+    in byte Yplane,
     int Ypitch,
-    /*const*/ byte* Uplane,
+    in byte Uplane,
     int Upitch,
-    /*const*/ byte* Vplane,
+    in byte Vplane,
     int Vpitch
   );
 
@@ -373,34 +506,6 @@ namespace SDLSharp {
       public UInt32 num_texture_formats;
       public fixed uint texture_formats[16];
       public int max_texture_width, max_texture_height;
-    }
-  }
-
-  class SDL_RendererPtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
-    private SDL_RendererPtr() : base(true) {
-    }
-
-    internal SDL_RendererPtr(IntPtr ptr) : base(false) {
-      SetHandle(ptr);
-    }
-
-    override protected bool ReleaseHandle() {
-      NativeMethods.SDL_DestroyRenderer(this.handle);
-      return true;
-    }
-  }
-
-  class SDL_TexturePtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
-    private SDL_TexturePtr() : base(true) {
-    }
-
-    internal SDL_TexturePtr(IntPtr ptr) : base(false) {
-      SetHandle(ptr);
-    }
-
-    override protected bool ReleaseHandle() {
-      NativeMethods.SDL_DestroyTexture(this.handle);
-      return true;
     }
   }
 

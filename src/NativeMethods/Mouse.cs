@@ -8,18 +8,18 @@ namespace SDLSharp {
     public static extern int SDL_CaptureMouse(SDL_Bool enabled);
 
     [DllImport("SDL2")]
-    public static extern SDL_CursorPtr SDL_CreateColorCursor(
+    public static extern Cursor SDL_CreateColorCursor(
         Surface surface, int hot_x, int hot_y);
 
     [DllImport("SDL2")]
-    public static extern SDL_CursorPtr SDL_CreateCursor(
+    public static extern Cursor SDL_CreateCursor(
         /*const*/ byte* data,
         /*const*/ byte* mask,
         int w, int h,
         int hot_x, int hot_y);
 
     [DllImport("SDL2")]
-    public static extern SDL_CursorPtr SDL_CreateSystemCursor(SystemCursor id);
+    public static extern Cursor SDL_CreateSystemCursor(SystemCursor id);
 
     [DllImport("SDL2")]
     public static extern void SDL_FreeCursor(IntPtr cursor);
@@ -67,7 +67,7 @@ namespace SDLSharp {
     public static extern uint SDL_GetRelativeMouseState(out int x, IntPtr y);
 
     [DllImport("SDL2")]
-    public static extern void SDL_SetCursor(SDL_CursorPtr cursor);
+    public static extern void SDL_SetCursor(Cursor cursor);
 
     [DllImport("SDL2")]
     public static extern void SDL_SetCursor(IntPtr cursor);
@@ -82,24 +82,10 @@ namespace SDLSharp {
     public static extern int SDL_WarpMouseGlobal(int x, int y);
 
     [DllImport("SDL2")]
-    public static extern int SDL_WarpMouseInWindow(SDL_WindowPtr window, int x, int y);
+    public static extern int SDL_WarpMouseInWindow(Window window, int x, int y);
 
     [DllImport("SDL2")]
     public static extern int SDL_WarpMouseInWindow(IntPtr window, int x, int y);
-  }
-
-  class SDL_CursorPtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
-    private SDL_CursorPtr() : base(true) {
-    }
-
-    internal SDL_CursorPtr(IntPtr ptr) : base(false) {
-      SetHandle(ptr);
-    }
-
-    override protected bool ReleaseHandle() {
-      NativeMethods.SDL_FreeCursor(this.handle);
-      return true;
-    }
   }
 
   public enum SystemCursor {

@@ -104,7 +104,7 @@ namespace SDLSharp
 
     public static void WarpInWindow(int x, int y, Window? inWindow = null) {
       if (inWindow != null)
-        SDL_WarpMouseInWindow(inWindow.handle, x, y);
+        SDL_WarpMouseInWindow(inWindow, x, y);
       else
         SDL_WarpMouseInWindow(IntPtr.Zero, x, y);
     }
@@ -113,7 +113,7 @@ namespace SDLSharp
     public static Window? Focused() {
       var ptr = SDL_GetMouseFocus();
       if (ptr != IntPtr.Zero)
-        return new Window(new SDL_WindowPtr(ptr));
+        return new Window(ptr, false);
       else
         return null;
     }

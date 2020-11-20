@@ -1,42 +1,44 @@
 using System;
 using System.Text;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using static SDLSharp.NativeMethods;
 
 namespace SDLSharp
 {
-  public class Renderer : IDisposable {
+  public class Renderer : SafeHandle {
 
     public static RenderDrivers Drivers { get; } = new RenderDrivers();
 
-    readonly internal SDL_RendererPtr renderer;
+    protected Renderer() : base(IntPtr.Zero, true) {
+    }
 
-    internal Renderer(SDL_RendererPtr renderer) {
-      this.renderer = renderer;
+    public Renderer(IntPtr h, bool owned) : base(IntPtr.Zero, owned) {
+      SetHandle(h);
     }
 
 
     public RendererInfo Info {
       get {
         SDL_RendererInfo info;
-        SDL_GetRendererInfo(renderer, out info);
+        SDL_GetRendererInfo(this, out info);
         return new RendererInfo(info);
       }
     }
 
     public Texture? Target {
       get {
-        var p = SDL_GetRenderTarget(renderer);
+        var p = SDL_GetRenderTarget(this);
         if (p == IntPtr.Zero)
           return null;
         else
-          return new Texture(new SDL_TexturePtr(p));
+          return new Texture(p, false);
       }
       set {
         if (value == null)
-          SDL_SetRenderTarget(renderer, IntPtr.Zero);
+          SDL_SetRenderTarget(this, IntPtr.Zero);
         else
-          SDL_SetRenderTarget(renderer, value.texture);
+          SDL_SetRenderTarget(this, value);
       }
     }
 
@@ -44,61 +46,67 @@ namespace SDLSharp
     public BlendMode BlendMode {
       get {
         BlendMode mode;
-        ErrorIfNegative(SDL_GetRenderDrawBlendMode(renderer, out mode));
+        ErrorIfNegative(SDL_GetRenderDrawBlendMode(this, out mode));
         return mode;
       }
       set {
-        ErrorIfNegative(SDL_SetRenderDrawBlendMode(renderer, value));
+        ErrorIfNegative(SDL_SetRenderDrawBlendMode(this, value));
       }
     }
 
     public Color Color {
       get {
         Color c;
-        ErrorIfNegative(SDL_GetRenderDrawColor(renderer, out c.r, out c.g, out c.b, out c.a));
+        ErrorIfNegative(SDL_GetRenderDrawColor(this, out c.r, out c.g, out c.b, out c.a));
         return c;
       }
       set { 
-        ErrorIfNegative(SDL_SetRenderDrawColor(renderer, value.r, value.g, value.b, value.a));
+        ErrorIfNegative(SDL_SetRenderDrawColor(this, value.r, value.g, value.b, value.a));
       }
     }
 
     public System.Drawing.SizeF Scale {
       get {
         float w, h;
-        SDL_RenderGetScale(renderer, out w, out h);
+        SDL_RenderGetScale(this, out w, out h);
         return new System.Drawing.SizeF(w, h);
       }
       set {
-        ErrorIfNegative(SDL_RenderSetScale(renderer, value.Width, value.Height));
+        ErrorIfNegative(SDL_RenderSetScale(this, value.Width, value.Height));
       }
     }
 
-    public unsafe Rect ClipRect {
+    public Rect ClipRect {
       get {
         Rect clip;
-        SDL_RenderGetClipRect(renderer, out clip);
+        SDL_RenderGetClipRect(this, out clip);
         return clip;
       }
       set {
-        ErrorIfNegative(SDL_RenderSetClipRect(renderer, Rect.IsEmpty(value) ? null : &value));
+        if (Rect.IsEmpty(value))
+          ErrorIfNegative(SDL_RenderSetClipRect(this, IntPtr.Zero));
+        else
+          ErrorIfNegative(SDL_RenderSetClipRect(this, value));
       }
     }
 
-    public unsafe Rect Viewport {
+    public Rect Viewport {
       get {
         Rect clip;
-        SDL_RenderGetViewport(renderer, out clip);
+        SDL_RenderGetViewport(this, out clip);
         return clip;
       }
       set {
-        ErrorIfNegative(SDL_RenderSetViewport(renderer, Rect.IsEmpty(value) ? null : &value));
+        if (Rect.IsEmpty(value))
+          ErrorIfNegative(SDL_RenderSetClipRect(this, IntPtr.Zero));
+        else
+          ErrorIfNegative(SDL_RenderSetClipRect(this, value));
       }
     }
 
-    public unsafe bool IntegerScale {
+    public bool IntegerScale {
       get {
-        var forced = SDL_RenderGetIntegerScale(renderer);
+        var forced = SDL_RenderGetIntegerScale(this);
         if (forced == SDL_Bool.False) {
           var err = GetError();
           if (err != null)
@@ -107,14 +115,14 @@ namespace SDLSharp
         return forced == SDL_Bool.True;
       }
       set {
-        ErrorIfNegative(SDL_RenderSetIntegerScale(renderer, value ? SDL_Bool.True : SDL_Bool.False));
+        ErrorIfNegative(SDL_RenderSetIntegerScale(this, value ? SDL_Bool.True : SDL_Bool.False));
       }
     }
 
     public System.Drawing.Size OutputSize {
       get {
         int w, h;
-        ErrorIfNegative(SDL_GetRendererOutputSize(renderer, out w, out h));
+        ErrorIfNegative(SDL_GetRendererOutputSize(this, out w, out h));
         return new System.Drawing.Size(w, h);
       }
     }
@@ -122,66 +130,58 @@ namespace SDLSharp
     public System.Drawing.Size LogicalSize {
       get {
         int w, h;
-        SDL_RenderGetLogicalSize(renderer, out w, out h);
+        SDL_RenderGetLogicalSize(this, out w, out h);
         return new System.Drawing.Size(w, h);
       }
       set {
-        ErrorIfNegative(SDL_RenderSetLogicalSize(renderer, value.Width, value.Height));
+        ErrorIfNegative(SDL_RenderSetLogicalSize(this, value.Width, value.Height));
       }
     }
 
     public void Clear() {
-      ErrorIfNegative(SDL_RenderClear(renderer));
+      ErrorIfNegative(SDL_RenderClear(this));
     }
 
     public void Present() {
-      SDL_RenderPresent(renderer);
+      SDL_RenderPresent(this);
     }
 
-    public unsafe void Copy(
+    public void Copy(
       Texture texture,
       in Rect dst,
       double angle = 0,
       RendererFlip flip = RendererFlip.None
     ) {
-      fixed (Rect* ptr = &dst) {
-        if (angle != 0 || flip !=  RendererFlip.None)
-          SDL_RenderCopyEx(renderer, texture.texture, null, ptr, angle, null, flip);
-        else
-          SDL_RenderCopy(renderer, texture.texture, null, ptr);
-      }
+      if (angle != 0 || flip !=  RendererFlip.None)
+        SDL_RenderCopyEx(this, texture, IntPtr.Zero, dst, angle, IntPtr.Zero, flip);
+      else
+        SDL_RenderCopy(this, texture, IntPtr.Zero, dst);
     }
 
-    public unsafe void Copy(
+    public void Copy(
       Texture texture,
       in Rect src,
       in Rect dst,
       double angle = 0,
       RendererFlip flip = RendererFlip.None
     ) {
-      fixed (Rect* ptr = &dst)
-      fixed (Rect* sptr = &src) {
-        if (angle != 0 || flip !=  RendererFlip.None)
-          SDL_RenderCopyEx(renderer, texture.texture, sptr, ptr, angle, null, flip);
-        else
-          SDL_RenderCopy(renderer, texture.texture, sptr, ptr);
-      }
+      if (angle != 0 || flip !=  RendererFlip.None)
+        SDL_RenderCopyEx(this, texture, src, dst, angle, IntPtr.Zero, flip);
+      else
+        SDL_RenderCopy(this, texture, src, dst);
     }
 
-    public unsafe void Copy(
+    public void Copy(
       Texture texture,
       in Rect dst,
       in Point center,
       double angle = 0,
       RendererFlip flip = RendererFlip.None
     ) {
-      fixed (Point* pt = &center)
-      fixed (Rect* ptr = &dst) {
-        SDL_RenderCopyEx(renderer, texture.texture, null, ptr, angle, pt, flip);
-      }
+      SDL_RenderCopyEx(this, texture, IntPtr.Zero, dst, angle, center, flip);
     }
 
-    public unsafe void Copy(
+    public void Copy(
       Texture texture,
       in Rect src,
       in Rect dst,
@@ -189,76 +189,76 @@ namespace SDLSharp
       double angle = 0,
       RendererFlip flip = RendererFlip.None
     ) {
-      fixed (Point* pt = &center)
-      fixed (Rect* ptr = &dst)
-      fixed (Rect* sptr = &src) {
-        SDL_RenderCopyEx(renderer, texture.texture, sptr, ptr, angle, pt, flip);
-      }
+      SDL_RenderCopyEx(this, texture, src, dst, angle, center, flip);
     }
 
     public void DrawLine(Point a, Point b)
       => DrawLine(a.x, a.y, b.x, b.y);
 
     public void DrawLine(int x1, int y1, int x2, int y2) {
-      ErrorIfNegative(SDL_RenderDrawLine(renderer, x1, y2, x2, y2));
+      ErrorIfNegative(SDL_RenderDrawLine(this, x1, y2, x2, y2));
     }
 
     public unsafe void DrawLines(ReadOnlySpan<Point> points) {
-      fixed (Point* ptr = &System.Runtime.InteropServices.MemoryMarshal.GetReference(points))
-        ErrorIfNegative(SDL_RenderDrawLines(renderer, ptr, points.Length));
+      fixed (Point* ptr = &MemoryMarshal.GetReference(points))
+        ErrorIfNegative(SDL_RenderDrawLines(this, ptr, points.Length));
     }
 
     public void DrawPoint(Point p)
       => DrawPoint(p.x, p.y);
 
     public void DrawPoint(int x, int y) {
-      ErrorIfNegative(SDL_RenderDrawPoint(renderer, x, y));
+      ErrorIfNegative(SDL_RenderDrawPoint(this, x, y));
     }
 
     public unsafe void DrawPoints(ReadOnlySpan<Point> points) {
-      fixed (Point* ptr = &System.Runtime.InteropServices.MemoryMarshal.GetReference(points))
-        ErrorIfNegative(SDL_RenderDrawPoints(renderer, ptr, points.Length));
+      fixed (Point* ptr = &MemoryMarshal.GetReference(points))
+        ErrorIfNegative(SDL_RenderDrawPoints(this, ptr, points.Length));
     }
 
-    public unsafe void DrawRect(Rect rect) {
-      ErrorIfNegative(SDL_RenderDrawRect(renderer, &rect));
+    public void DrawRect(Rect rect) {
+      ErrorIfNegative(SDL_RenderDrawRect(this, rect));
     }
 
-    public unsafe void DrawRect(int x, int y, int w, int h) {
+    public void DrawRect(int x, int y, int w, int h) {
       Rect r;
       r.x = x;
       r.y = y;
       r.w = w;
       r.h = h;
-      ErrorIfNegative(SDL_RenderDrawRect(renderer, &r));
+      ErrorIfNegative(SDL_RenderDrawRect(this, r));
     }
 
     public unsafe void DrawRects(ReadOnlySpan<Rect> rect) {
       fixed (Rect* ptr = &System.Runtime.InteropServices.MemoryMarshal.GetReference(rect))
-        ErrorIfNegative(SDL_RenderDrawRects(renderer, ptr, rect.Length));
+        ErrorIfNegative(SDL_RenderDrawRects(this, ptr, rect.Length));
     }
 
-    public unsafe void FillRect(Rect rect) {
-      SDL_RenderFillRect(renderer, &rect);
+    public void FillRect(Rect rect) {
+      SDL_RenderFillRect(this, rect);
     }
 
     public unsafe void FillRects(ReadOnlySpan<Rect> rect) {
       fixed (Rect* ptr = &System.Runtime.InteropServices.MemoryMarshal.GetReference(rect))
-        ErrorIfNegative(SDL_RenderFillRects(renderer, ptr, rect.Length));
+        ErrorIfNegative(SDL_RenderFillRects(this, ptr, rect.Length));
     }
 
-    public void Dispose() {
-      renderer.Dispose();
+
+    public override bool IsInvalid => handle == IntPtr.Zero;
+
+    override protected bool ReleaseHandle() {
+      SDL_DestroyRenderer(this.handle);
+      return true;
     }
 
     public static Renderer Create(Window window, int index, RendererFlags flags)
-      => new Renderer(ErrorIfInvalid(SDL_CreateRenderer(window.handle, index, flags)));
+      => ErrorIfInvalid(SDL_CreateRenderer(window, index, flags));
 
     public Texture CreateTexture(Surface surface) {
-      return new Texture(ErrorIfInvalid(SDL_CreateTextureFromSurface(renderer, surface)));
+      return ErrorIfInvalid(SDL_CreateTextureFromSurface(this, surface));
     }
     public Texture CreateTexture(uint format, TextureAccess access, int width, int height) {
-      return new Texture(ErrorIfInvalid(SDL_CreateTexture(renderer, format, access, width, height)));
+      return ErrorIfInvalid(SDL_CreateTexture(this, format, access, width, height));
     }
   }
 }

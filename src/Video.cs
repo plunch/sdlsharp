@@ -41,10 +41,10 @@ namespace SDLSharp
       => Window.Create(title, x, y, w, h, flags);
 
     public static (Window window, Renderer renderer) CreateWindowAndRenderer(int width, int height, WindowFlags flags) {
-      SDL_WindowPtr window;
-      SDL_RendererPtr renderer;
+      Window window;
+      Renderer renderer;
       ErrorIfNegative(SDL_CreateWindowAndRenderer(width, height, flags, out window, out renderer));
-      return (new Window(window), new Renderer(renderer));
+      return (window, renderer);
     }
   }
 }

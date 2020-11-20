@@ -1,21 +1,23 @@
 using System;
 using System.Text;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using static SDLSharp.NativeMethods;
 
 namespace SDLSharp
 {
-  public class Texture : IDisposable {
-    internal readonly SDL_TexturePtr texture;
+  public class Texture : SafeHandle {
+    protected Texture() : base(IntPtr.Zero, true) {
+    }
 
-    internal Texture(SDL_TexturePtr ptr) {
-      this.texture = ptr;
+    public Texture(IntPtr h, bool owned) : base(IntPtr.Zero, owned) {
+      SetHandle(h);
     }
 
     public unsafe int Width {
       get {
         int w;
-        ErrorIfNegative(SDL_QueryTexture(texture, null, null, &w, null));
+        ErrorIfNegative(SDL_QueryTexture(this, IntPtr.Zero, IntPtr.Zero, out w, IntPtr.Zero));
         return w;
       }
     }
@@ -23,7 +25,7 @@ namespace SDLSharp
     public unsafe int Height {
       get {
         int h;
-        ErrorIfNegative(SDL_QueryTexture(texture, null, null, null, &h));
+        ErrorIfNegative(SDL_QueryTexture(this, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, out h));
         return h;
       }
     }
@@ -31,7 +33,7 @@ namespace SDLSharp
     public unsafe System.Drawing.Size Size {
       get {
         int w, h;
-        ErrorIfNegative(SDL_QueryTexture(texture, null, null, &w, &h));
+        ErrorIfNegative(SDL_QueryTexture(this, IntPtr.Zero, IntPtr.Zero, out w, out h));
         return new System.Drawing.Size(w, h);
       }
     }
@@ -39,7 +41,7 @@ namespace SDLSharp
     public unsafe TextureAccess Access {
       get {
         TextureAccess access;
-        ErrorIfNegative(SDL_QueryTexture(texture, null, &access, null, null));
+        ErrorIfNegative(SDL_QueryTexture(this, IntPtr.Zero, out access, IntPtr.Zero, IntPtr.Zero));
         return access;
       }
     }
@@ -47,7 +49,7 @@ namespace SDLSharp
     public unsafe uint Format {
       get {
         uint format;
-        ErrorIfNegative(SDL_QueryTexture(texture, &format, null, null, null));
+        ErrorIfNegative(SDL_QueryTexture(this, out format, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero));
         return format;
       }
     }
@@ -55,38 +57,41 @@ namespace SDLSharp
     public byte AlphaMod {
       get {
         byte alpha;
-        ErrorIfNegative(SDL_GetTextureAlphaMod(texture, out alpha));
+        ErrorIfNegative(SDL_GetTextureAlphaMod(this, out alpha));
         return alpha;
       }
       set {
-        ErrorIfNegative(SDL_SetTextureAlphaMod(texture, value));
+        ErrorIfNegative(SDL_SetTextureAlphaMod(this, value));
       }
     }
 
     public Color ColorMod {
       get {
         byte r, g, b;
-        ErrorIfNegative(SDL_GetTextureColorMod(texture, out r, out g, out b));
+        ErrorIfNegative(SDL_GetTextureColorMod(this, out r, out g, out b));
         return new Color(r, g, b);
       }
       set {
-        ErrorIfNegative(SDL_SetTextureColorMod(texture, value.r, value.g, value.b));
+        ErrorIfNegative(SDL_SetTextureColorMod(this, value.r, value.g, value.b));
       }
     }
 
     public BlendMode BlendMode {
       get {
         BlendMode mode;
-        ErrorIfNegative(SDL_GetTextureBlendMode(texture, out mode));
+        ErrorIfNegative(SDL_GetTextureBlendMode(this, out mode));
         return mode;
       }
       set {
-        ErrorIfNegative(SDL_SetTextureBlendMode(texture, value));
+        ErrorIfNegative(SDL_SetTextureBlendMode(this, value));
       }
     }
 
-    public void Dispose() {
-      texture.Dispose();
+    public override bool IsInvalid => handle == IntPtr.Zero;
+
+    override protected bool ReleaseHandle() {
+      SDL_DestroyTexture(this.handle);
+      return true;
     }
   }
 }

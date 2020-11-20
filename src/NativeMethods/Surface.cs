@@ -207,7 +207,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern int SDL_SetSurfacePalette(
       Surface surface,
-      SDL_PalettePtr palette
+      Palette palette
     );
 
     [DllImport("SDL2")]

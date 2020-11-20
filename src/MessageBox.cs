@@ -63,7 +63,7 @@ namespace SDLSharp
         if (parent == null)
           ErrorIfNegative(SDL_ShowSimpleMessageBox((uint)flags, t, msg, IntPtr.Zero));
         else
-          ErrorIfNegative(SDL_ShowSimpleMessageBox((uint)flags, t, msg, parent.handle));
+          ErrorIfNegative(SDL_ShowSimpleMessageBox((uint)flags, t, msg, parent));
       }
     }
 
@@ -82,8 +82,8 @@ namespace SDLSharp
       Span<byte> msgbuf = stackalloc byte[SL(message)];
       StringToUTF8(title, tbuf);
       StringToUTF8(message, msgbuf);
-      fixed (byte* t = &MemoryMarshal.GetReference(tbuf))
-      fixed (byte* msg = &MemoryMarshal.GetReference(msgbuf)) {
+      fixed (byte* t = tbuf)
+      fixed (byte* msg = msgbuf) {
         Span<SDL_MessageBoxButtonData> btns = new SDL_MessageBoxButtonData[16];
         SDL_MessageBoxData data;
         data.flags = (uint)flags;
@@ -101,18 +101,18 @@ namespace SDLSharp
           }
           if (parent != null) {
             bool ok = false;
-            parent.handle.DangerousAddRef(ref ok);
+            parent.DangerousAddRef(ref ok);
             if (ok)
-              data.window = parent.handle.DangerousGetHandle();
+              data.window = parent.DangerousGetHandle();
           }
           data.numbuttons = MarshalButtons(buttons, btns);
           fixed(SDL_MessageBoxButtonData* bptr = &MemoryMarshal.GetReference(btns)) {
             data.buttons = bptr;
-            ErrorIfNegative(SDL_ShowMessageBox(&data, out clicked));
+            ErrorIfNegative(SDL_ShowMessageBox(data, out clicked));
           }
         } finally {
           if (parent != null && data.window != IntPtr.Zero)
-            parent.handle.DangerousRelease();
+            parent.DangerousRelease();
           if (data.numbuttons > 0) {
             for (var i = 0; i < data.numbuttons; ++i) {
               Marshal.FreeHGlobal((IntPtr)btns[i].text);

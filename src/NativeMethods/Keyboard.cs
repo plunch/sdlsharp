@@ -34,7 +34,7 @@ namespace SDLSharp {
     public static extern SDL_Bool SDL_HasScreenKeyboardSupport();
 
     [DllImport("SDL2")]
-    public static extern SDL_Bool SDL_IsScreenKeyboardShown(SDL_WindowPtr window);
+    public static extern SDL_Bool SDL_IsScreenKeyboardShown(Window window);
 
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_IsTextInputActive();

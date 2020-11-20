@@ -4,114 +4,87 @@ using static SDLSharp.NativeMethods;
 using System.Runtime.InteropServices;
 
 namespace SDLSharp {
-  public class PixelFormat : IDisposable {
-    SDL_PixelFormatPtr format;
+  public unsafe class PixelFormat : SafeHandle {
+
+    private SDL_PixelFormat* ptr {
+      get {
+        if (IsInvalid) throw new ObjectDisposedException(nameof(PixelFormat));
+        return (SDL_PixelFormat*)handle;
+      }
+    }
+
+    private PixelFormat() : base(IntPtr.Zero, true) {
+    }
+
+    internal PixelFormat(IntPtr ptr, bool owned) : base(IntPtr.Zero, owned) {
+      SetHandle(ptr);
+    }
 
     public PixelFormat(PixelDataFormat dataFormat) : this((uint)dataFormat) {}
-    public PixelFormat(uint dataFormat) {
-      this.format = ErrorIfInvalid(SDL_AllocFormat(dataFormat));
+    public PixelFormat(uint dataFormat) : this() {
+      var format = ErrorIfInvalid(SDL_AllocFormat(dataFormat));
+      SetHandle(format.handle);
+      format.SetHandle(IntPtr.Zero);
     }
 
     public PixelFormat(PixelFormatMask mask): this(mask.DataFormat) {}
 
-    internal PixelFormat(SDL_PixelFormatPtr ptr) {
-      this.format = ptr;
-    }
+    public PixelDataFormat DataFormat => (PixelDataFormat)ptr->format;
 
-    public unsafe uint DataFormat {
+    public Palette Palette {
       get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->format;
-      }
-    }
-
-    public unsafe Palette Palette {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return new Palette(new SDL_PalettePtr((IntPtr)ptr->palette));
+        return new Palette((IntPtr)ptr->palette, false);
       }
       set {
-        ErrorIfNegative(SDL_SetPixelFormatPalette(format, value.palette));
+        ErrorIfNegative(SDL_SetPixelFormatPalette(this, value));
       }
     }
 
-    public unsafe byte BitsPerPixel {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->BitsPerPixel;
-      }
-    }
+    public byte BitsPerPixel => ptr->BitsPerPixel;
 
-    public unsafe byte BytesPerPixel {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->BytesPerPixel;
-      }
-    }
+    public byte BytesPerPixel => ptr->BytesPerPixel;
 
-    public unsafe uint RMask {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->Rmask;
-      }
-    }
+    public uint RMask => ptr->Rmask;
+    public uint GMask => ptr->Gmask;
+    public uint BMask => ptr->Bmask;
+    public uint AMask => ptr->Amask;
 
-    public unsafe uint GMask {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->Gmask;
-      }
+    public void SetPalette(Palette palette) {
+      ErrorIfNegative(SDL_SetPixelFormatPalette(this, palette));
     }
-
-    public unsafe uint BMask {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->Bmask;
-      }
-    }
-
-    public unsafe uint AMask {
-      get {
-        var ptr = (SDL_PixelFormat*)format.DangerousGetHandle();
-        return ptr->Amask;
-      }
-    }
-
-    public void SetPalette(Palette p) {
-      ErrorIfNegative(SDL_SetPixelFormatPalette(format, p.palette));
-    }
-
 
     public uint Encode(byte r, byte g, byte b) {
-      return SDL_MapRGB(format, r, g, b);
+      return SDL_MapRGB(this, r, g, b);
     }
 
     public uint Encode(byte r, byte g, byte b, byte a) {
-      return SDL_MapRGBA(format, r, g, b, a);
+      return SDL_MapRGBA(this, r, g, b, a);
     }
 
     public uint Encode(Color clr) {
-      return SDL_MapRGBA(format, clr.r, clr.g, clr.b, clr.a);
+      return SDL_MapRGBA(this, clr.r, clr.g, clr.b, clr.a);
     }
 
     public Color Decode(uint pixel) {
       byte r, g, b, a;
-      SDL_GetRGBA(pixel, format, out r, out g, out b, out a);
+      SDL_GetRGBA(pixel, this, out r, out g, out b, out a);
       return new Color(r, g, b, a);
     }
 
-    public void Dispose() {
-      format.Dispose();
-    }
+    public override bool IsInvalid => handle == IntPtr.Zero;
 
-    public static unsafe string? GetName(uint dataFormat) {
+    override protected bool ReleaseHandle() {
+      NativeMethods.SDL_FreeFormat(this.handle);
+      return true;
+    }
+    public static string? GetName(uint dataFormat) {
       return UTF8ToString(SDL_GetPixelFormatName(dataFormat));
     }
-    public static unsafe string? GetName(PixelDataFormat dataFormat) {
+    public static string? GetName(PixelDataFormat dataFormat) {
       return GetName((uint)dataFormat);
     }
 
-    public static unsafe void Convert(
+    public static void Convert(
       int width, int height,
       uint srcFormat,
       ReadOnlySpan<byte> src,

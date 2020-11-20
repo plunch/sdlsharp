@@ -6,19 +6,25 @@ using System.Runtime.InteropServices;
 
 namespace SDLSharp
 {
-  public class Cursor : IDisposable {
-    internal readonly SDL_CursorPtr cursor;
+  public class Cursor : SafeHandle {
 
-    internal Cursor(SDL_CursorPtr handle) {
-      this.cursor = handle;
+    private Cursor() : base(IntPtr.Zero, true) {
     }
 
-    public Cursor(SystemCursor id) {
-      this.cursor = ErrorIfInvalid(SDL_CreateSystemCursor(id));
+    internal Cursor(IntPtr ptr, bool owned) : base(IntPtr.Zero, owned) {
+      SetHandle(ptr);
     }
 
-    public Cursor(Surface surface, int hotX, int hotY) {
-      this.cursor = ErrorIfInvalid(SDL_CreateColorCursor(surface, hotX, hotY));
+    public Cursor(SystemCursor id) : this() {
+      var cursor = ErrorIfInvalid(SDL_CreateSystemCursor(id));
+      SetHandle(cursor.handle);
+      cursor.SetHandle(IntPtr.Zero);
+    }
+
+    public Cursor(Surface surface, int hotX, int hotY) : this() {
+      var cursor = ErrorIfInvalid(SDL_CreateColorCursor(surface, hotX, hotY));
+      SetHandle(cursor.handle);
+      cursor.SetHandle(IntPtr.Zero);
     }
 
     public static Cursor? Current {
@@ -26,19 +32,19 @@ namespace SDLSharp
         var ptr = SDL_GetCursor();
         if (ptr == IntPtr.Zero)
           return null;
-        return new Cursor(new SDL_CursorPtr(ptr));
+        return new Cursor(ptr, false);
       }
       set {
         if (value == null)
           SDL_SetCursor(IntPtr.Zero);
         else
-          SDL_SetCursor(value.cursor);
+          SDL_SetCursor(value);
       }
     }
 
     public static Cursor Default {
       get {
-        return new Cursor(new SDL_CursorPtr(ErrorIfNull(SDL_GetDefaultCursor())));
+        return new Cursor(ErrorIfNull(SDL_GetDefaultCursor()), false);
       }
     }
 
@@ -51,8 +57,11 @@ namespace SDLSharp
       }
     }
 
-    public void Dispose() {
-      cursor.Dispose();
+    public override bool IsInvalid => handle == IntPtr.Zero;
+
+    override protected bool ReleaseHandle() {
+      NativeMethods.SDL_FreeCursor(this.handle);
+      return true;
     }
   }
 }

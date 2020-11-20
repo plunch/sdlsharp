@@ -96,10 +96,10 @@ namespace SDLSharp
         m.w = mode.Width;
         m.h = mode.Height;
         m.refresh_rate = mode.RefreshRate;
-        m.driverdata = null;
+        m.driverdata = IntPtr.Zero;
 
         SDL_DisplayMode closest;
-        ErrorIfNull((IntPtr)SDL_GetClosestDisplayMode(index, &m, out closest));
+        ErrorIfNull((IntPtr)SDL_GetClosestDisplayMode(index, m, out closest));
         return new DisplayMode(closest);
       }
 

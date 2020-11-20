@@ -5,7 +5,7 @@ namespace SDLSharp {
   static unsafe partial class NativeMethods {
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_GetWindowWMInfo(
-      SDL_WindowPtr window,
+      Window window,
       out SDL_SysWMInfo info
     );
 

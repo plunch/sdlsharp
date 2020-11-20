@@ -20,18 +20,18 @@ namespace SDLSharp
       SetHandle(h);
     }
 
-    public unsafe int Width => ptr->w;
-    public unsafe int Height => ptr->h;
+    public int Width => ptr->w;
+    public int Height => ptr->h;
 
-    public unsafe PixelFormat Format {
+    public PixelFormat Format {
       get {
-        return new PixelFormat(new SDL_PixelFormatPtr((IntPtr)ptr->format));
+        return new PixelFormat((IntPtr)ptr->format, false);
       }
     }
 
-    public unsafe int Pitch => ptr->pitch;
+    public int Pitch => ptr->pitch;
 
-    public unsafe Rect Clip {
+    public Rect Clip {
       get {
         Rect result;
         SDL_GetClipRect(this, out result);
@@ -53,7 +53,7 @@ namespace SDLSharp
       }
     }
 
-    public unsafe uint? ColorKey {
+    public uint? ColorKey {
       get {
         uint key;
         var res = SDL_GetColorKey(this, out key);
@@ -92,14 +92,14 @@ namespace SDLSharp
       }
     }
 
-    public static unsafe void Blit(
+    public static void Blit(
       Surface src,
       Surface dst
     ) {
       ErrorIfNegative(SDL_BlitSurface(src, null, dst, null));
     }
 
-    public static unsafe void Blit(
+    public static void Blit(
       Surface src,
       in Rect srcRect, 
       Surface dst
@@ -108,7 +108,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_BlitSurface(src, srcrect, dst, null));
     }
 
-    public static unsafe void Blit(
+    public static void Blit(
       Surface src,
       Surface dst,
       in Rect dstRect
@@ -117,7 +117,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_BlitSurface(src, null, dst, dstrect));
     }
 
-    public static unsafe void Blit(
+    public static void Blit(
       Surface src,
       in Rect srcRect, 
       Surface dst,
@@ -128,14 +128,14 @@ namespace SDLSharp
         ErrorIfNegative(SDL_BlitSurface(src, srcrect, dst, dstrect));
     }
 
-    public static unsafe void BlitScaled(
+    public static void BlitScaled(
       Surface src,
       Surface dst
     ) {
       ErrorIfNegative(SDL_BlitScaled(src, null, dst, null));
     }
 
-    public static unsafe void BlitScaled(
+    public static void BlitScaled(
       Surface src,
       in Rect srcRect, 
       Surface dst
@@ -144,7 +144,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_BlitScaled(src, srcrect, dst, null));
     }
 
-    public static unsafe void BlitScaled(
+    public static void BlitScaled(
       Surface src,
       Surface dst,
       in Rect dstRect
@@ -153,7 +153,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_BlitScaled(src, null, dst, dstrect));
     }
 
-    public static unsafe void BlitScaled(
+    public static void BlitScaled(
       Surface src,
       in Rect srcRect, 
       Surface dst,
@@ -164,14 +164,14 @@ namespace SDLSharp
         ErrorIfNegative(SDL_BlitScaled(src, srcrect, dst, dstrect));
     }
 
-    public static unsafe void LowerBlit(
+    public static void LowerBlit(
       Surface src,
       Surface dst
     ) {
       ErrorIfNegative(SDL_LowerBlit(src, null, dst, null));
     }
 
-    public static unsafe void LowerBlit(
+    public static void LowerBlit(
       Surface src,
       in Rect srcRect, 
       Surface dst
@@ -180,7 +180,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_LowerBlit(src, srcrect, dst, null));
     }
 
-    public static unsafe void LowerBlit(
+    public static void LowerBlit(
       Surface src,
       Surface dst,
       in Rect dstRect
@@ -189,7 +189,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_LowerBlit(src, null, dst, dstrect));
     }
 
-    public static unsafe void LowerBlit(
+    public static void LowerBlit(
       Surface src,
       in Rect srcRect, 
       Surface dst,
@@ -200,14 +200,14 @@ namespace SDLSharp
         ErrorIfNegative(SDL_LowerBlit(src, srcrect, dst, dstrect));
     }
 
-    public static unsafe void LowerBlitScaled(
+    public static void LowerBlitScaled(
       Surface src,
       Surface dst
     ) {
       ErrorIfNegative(SDL_LowerBlitScaled(src, null, dst, null));
     }
 
-    public static unsafe void LowerBlitScaled(
+    public static void LowerBlitScaled(
       Surface src,
       in Rect srcRect, 
       Surface dst
@@ -216,7 +216,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_LowerBlitScaled(src, srcrect, dst, null));
     }
 
-    public static unsafe void LowerBlitScaled(
+    public static void LowerBlitScaled(
       Surface src,
       Surface dst,
       in Rect dstRect
@@ -225,7 +225,7 @@ namespace SDLSharp
         ErrorIfNegative(SDL_LowerBlitScaled(src, null, dst, dstrect));
     }
 
-    public static unsafe void LowerBlitScaled(
+    public static void LowerBlitScaled(
       Surface src,
       in Rect srcRect, 
       Surface dst,
@@ -236,16 +236,16 @@ namespace SDLSharp
         ErrorIfNegative(SDL_LowerBlitScaled(src, srcrect, dst, dstrect));
     }
 
-    public unsafe void Fill(uint color) {
+    public void Fill(uint color) {
       ErrorIfNegative(SDL_FillRect(this, null, color));
     }
 
-    public unsafe void Fill(in Rect rect, uint color) {
+    public void Fill(in Rect rect, uint color) {
       fixed(Rect* rp = &rect)
         ErrorIfNegative(SDL_FillRect(this, rp, color));
     }
 
-    public unsafe void Fill(ReadOnlySpan<Rect> rects, uint color) {
+    public void Fill(ReadOnlySpan<Rect> rects, uint color) {
       fixed(Rect* rp = &MemoryMarshal.GetReference(rects))
         ErrorIfNegative(SDL_FillRects(this, rp, rects.Length, color));
     }
@@ -262,8 +262,8 @@ namespace SDLSharp
       ErrorIfNegative(SDL_SetSurfaceRLE(this, enabled ? 1 : 0));
     }
 
-    public void SetPalette(Palette p) {
-      ErrorIfNegative(SDL_SetSurfacePalette(this, p.palette));
+    public void SetPalette(Palette palette) {
+      ErrorIfNegative(SDL_SetSurfacePalette(this, palette));
     }
 
     public static Surface Create(
@@ -285,7 +285,7 @@ namespace SDLSharp
       return ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormat(0, width, height, depth, format));
     }
 
-    public static unsafe Surface From(
+    public static Surface From(
         ReadOnlySpan<byte> data,
         int width,
         int height,
@@ -295,7 +295,7 @@ namespace SDLSharp
         return ErrorIfInvalid(SDL_CreateRGBSurfaceFrom(ptr, width, height, mask.BitsPerPixel, pitch, mask.R, mask.G, mask.B, mask.A));
     }
 
-    public static unsafe Surface From(
+    public static Surface From(
         ReadOnlySpan<byte> data,
         int width,
         int height,
@@ -306,19 +306,19 @@ namespace SDLSharp
         return ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormatFrom(ptr, width, height, depth, pitch, format));
     }
 
-    public static unsafe Surface LoadBMP(string file) {
+    public static Surface LoadBMP(string file) {
       return ErrorIfInvalid(SDL_LoadBMP_RW(RWOps.FromFile(file, "rb"), 1));
     }
 
-    public static unsafe Surface LoadBMP(RWOps src) {
+    public static Surface LoadBMP(RWOps src) {
       return ErrorIfInvalid(SDL_LoadBMP_RW(src, 0));
     }
 
-    public unsafe void SaveBMP(string file) {
+    public void SaveBMP(string file) {
       ErrorIfNegative(SDL_SaveBMP_RW(this, RWOps.FromFile(file, "wb"), 1));
     }
 
-    public unsafe void SaveBMP(RWOps dst) {
+    public void SaveBMP(RWOps dst) {
       ErrorIfNegative(SDL_SaveBMP_RW(this, dst, 0));
     }
 
@@ -344,7 +344,7 @@ namespace SDLSharp
           ErrorIfNegative(SDL_LockSurface(surface));
       }
 
-      public unsafe Span<byte> Get() {
+      public Span<byte> Get() {
         var len = surface.Format.BytesPerPixel * surface.Width * surface.Height; 
         return new Span<byte>(surface.ptr->pixels, len);
       }
