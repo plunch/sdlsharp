@@ -255,7 +255,7 @@ namespace SDLSharp
       => new Renderer(ErrorIfInvalid(SDL_CreateRenderer(window.handle, index, flags)));
 
     public Texture CreateTexture(Surface surface) {
-      return new Texture(ErrorIfInvalid(SDL_CreateTextureFromSurface(renderer, surface.surface)));
+      return new Texture(ErrorIfInvalid(SDL_CreateTextureFromSurface(renderer, surface)));
     }
     public Texture CreateTexture(uint format, TextureAccess access, int width, int height) {
       return new Texture(ErrorIfInvalid(SDL_CreateTexture(renderer, format, access, width, height)));

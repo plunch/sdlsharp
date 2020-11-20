@@ -18,7 +18,7 @@ namespace SDLSharp
     }
 
     public Cursor(Surface surface, int hotX, int hotY) {
-      this.cursor = ErrorIfInvalid(SDL_CreateColorCursor(surface.surface, hotX, hotY));
+      this.cursor = ErrorIfInvalid(SDL_CreateColorCursor(surface, hotX, hotY));
     }
 
     public static Cursor? Current {

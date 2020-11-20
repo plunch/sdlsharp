@@ -22,7 +22,7 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern SDL_RendererPtr SDL_CreateSoftwareRenderer(
-      SDL_SurfacePtr surface
+      Surface surface
     );
 
     [DllImport("SDL2")]
@@ -37,7 +37,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern SDL_TexturePtr SDL_CreateTextureFromSurface(
       SDL_RendererPtr renderer,
-      SDL_SurfacePtr surface
+      Surface surface
     );
 
     [DllImport("SDL2")]

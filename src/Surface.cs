@@ -4,67 +4,59 @@ using System.Runtime.InteropServices;
 
 namespace SDLSharp
 {
-  public class Surface : IDisposable {
-    internal readonly SDL_SurfacePtr surface;
-
-    internal Surface(SDL_SurfacePtr handle) {
-      this.surface = handle;
-    }
-
-    public unsafe int Width {
+  public unsafe class Surface : SafeHandle {
+    internal SDL_Surface* ptr {
       get {
-        var s = (SDL_Surface*)surface.DangerousGetHandle();
-        return s->w;
+        if (IsInvalid)
+          throw new ObjectDisposedException(nameof(Surface));
+        return (SDL_Surface*)handle;
       }
     }
 
-    public unsafe int Height {
-      get {
-        var s = (SDL_Surface*)surface.DangerousGetHandle();
-        return s->h;
-      }
+    protected Surface() : base(IntPtr.Zero, true) {
     }
+
+    public Surface(IntPtr h, bool owned) : base(IntPtr.Zero, owned) {
+      SetHandle(h);
+    }
+
+    public unsafe int Width => ptr->w;
+    public unsafe int Height => ptr->h;
 
     public unsafe PixelFormat Format {
       get {
-        var s = (SDL_Surface*)surface.DangerousGetHandle();
-        return new PixelFormat(new SDL_PixelFormatPtr((IntPtr)s->format));
+        return new PixelFormat(new SDL_PixelFormatPtr((IntPtr)ptr->format));
       }
     }
 
-    public unsafe int Pitch {
-      get {
-        var s = (SDL_Surface*)surface.DangerousGetHandle();
-        return s->pitch;
-      }
-    }
+    public unsafe int Pitch => ptr->pitch;
 
     public unsafe Rect Clip {
       get {
         Rect result;
-        SDL_GetClipRect(surface, out result);
+        SDL_GetClipRect(this, out result);
         return result;
       }
       set {
-        SDL_SetClipRect(surface, &value);
+        SDL_SetClipRect(this, &value);
       }
     }
 
     public BlendMode BlendMode {
       get {
         BlendMode mode;
-        ErrorIfNegative(SDL_GetSurfaceBlendMode(surface, out mode));
+        ErrorIfNegative(SDL_GetSurfaceBlendMode(this, out mode));
         return mode;
       }
       set {
-        ErrorIfNegative(SDL_SetSurfaceBlendMode(surface, value));
+        ErrorIfNegative(SDL_SetSurfaceBlendMode(this, value));
       }
     }
 
     public unsafe uint? ColorKey {
       get {
         uint key;
-        var res = SDL_GetColorKey(surface, out key);
+        var res = SDL_GetColorKey(this, out key);
         if (res == -1)
           return null;
         ErrorIfNegative(res);
@@ -72,31 +64,31 @@ namespace SDLSharp
       }
       set {
         if (value == null)
-          SDL_SetColorKey(surface, 0, 0);
+          SDL_SetColorKey(this, 0, 0);
         else
-          SDL_SetColorKey(surface, 1, value.Value);
+          SDL_SetColorKey(this, 1, value.Value);
       }
     }
 
     public byte AlphaMod {
       get {
         byte alpha;
-        ErrorIfNegative(SDL_GetSurfaceAlphaMod(surface, out alpha));
+        ErrorIfNegative(SDL_GetSurfaceAlphaMod(this, out alpha));
         return alpha;
       }
       set {
-        ErrorIfNegative(SDL_SetSurfaceAlphaMod(surface, value));
+        ErrorIfNegative(SDL_SetSurfaceAlphaMod(this, value));
       }
     }
 
     public Color ColorMod {
       get {
         byte r, g, b;
-        ErrorIfNegative(SDL_GetSurfaceColorMod(surface, out r, out g, out b));
+        ErrorIfNegative(SDL_GetSurfaceColorMod(this, out r, out g, out b));
         return new Color(r, g, b);
       }
       set {
-        ErrorIfNegative(SDL_SetSurfaceColorMod(surface, value.r, value.g, value.b));
+        ErrorIfNegative(SDL_SetSurfaceColorMod(this, value.r, value.g, value.b));
       }
     }
 
@@ -104,7 +96,7 @@ namespace SDLSharp
       Surface src,
       Surface dst
     ) {
-      ErrorIfNegative(SDL_BlitSurface(src.surface, null, dst.surface, null));
+      ErrorIfNegative(SDL_BlitSurface(src, null, dst, null));
     }
 
     public static unsafe void Blit(
@@ -113,7 +105,7 @@ namespace SDLSharp
       Surface dst
     ) {
       fixed(Rect* srcrect = &srcRect)
-        ErrorIfNegative(SDL_BlitSurface(src.surface, srcrect, dst.surface, null));
+        ErrorIfNegative(SDL_BlitSurface(src, srcrect, dst, null));
     }
 
     public static unsafe void Blit(
@@ -122,7 +114,7 @@ namespace SDLSharp
       in Rect dstRect
     ) {
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_BlitSurface(src.surface, null, dst.surface, dstrect));
+        ErrorIfNegative(SDL_BlitSurface(src, null, dst, dstrect));
     }
 
     public static unsafe void Blit(
@@ -133,14 +125,14 @@ namespace SDLSharp
     ) {
       fixed(Rect* srcrect = &srcRect)
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_BlitSurface(src.surface, srcrect, dst.surface, dstrect));
+        ErrorIfNegative(SDL_BlitSurface(src, srcrect, dst, dstrect));
     }
 
     public static unsafe void BlitScaled(
       Surface src,
       Surface dst
     ) {
-      ErrorIfNegative(SDL_BlitScaled(src.surface, null, dst.surface, null));
+      ErrorIfNegative(SDL_BlitScaled(src, null, dst, null));
     }
 
     public static unsafe void BlitScaled(
@@ -149,7 +141,7 @@ namespace SDLSharp
       Surface dst
     ) {
       fixed(Rect* srcrect = &srcRect)
-        ErrorIfNegative(SDL_BlitScaled(src.surface, srcrect, dst.surface, null));
+        ErrorIfNegative(SDL_BlitScaled(src, srcrect, dst, null));
     }
 
     public static unsafe void BlitScaled(
@@ -158,7 +150,7 @@ namespace SDLSharp
       in Rect dstRect
     ) {
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_BlitScaled(src.surface, null, dst.surface, dstrect));
+        ErrorIfNegative(SDL_BlitScaled(src, null, dst, dstrect));
     }
 
     public static unsafe void BlitScaled(
@@ -169,14 +161,14 @@ namespace SDLSharp
     ) {
       fixed(Rect* srcrect = &srcRect)
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_BlitScaled(src.surface, srcrect, dst.surface, dstrect));
+        ErrorIfNegative(SDL_BlitScaled(src, srcrect, dst, dstrect));
     }
 
     public static unsafe void LowerBlit(
       Surface src,
       Surface dst
     ) {
-      ErrorIfNegative(SDL_LowerBlit(src.surface, null, dst.surface, null));
+      ErrorIfNegative(SDL_LowerBlit(src, null, dst, null));
     }
 
     public static unsafe void LowerBlit(
@@ -185,7 +177,7 @@ namespace SDLSharp
       Surface dst
     ) {
       fixed(Rect* srcrect = &srcRect)
-        ErrorIfNegative(SDL_LowerBlit(src.surface, srcrect, dst.surface, null));
+        ErrorIfNegative(SDL_LowerBlit(src, srcrect, dst, null));
     }
 
     public static unsafe void LowerBlit(
@@ -194,7 +186,7 @@ namespace SDLSharp
       in Rect dstRect
     ) {
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_LowerBlit(src.surface, null, dst.surface, dstrect));
+        ErrorIfNegative(SDL_LowerBlit(src, null, dst, dstrect));
     }
 
     public static unsafe void LowerBlit(
@@ -205,14 +197,14 @@ namespace SDLSharp
     ) {
       fixed(Rect* srcrect = &srcRect)
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_LowerBlit(src.surface, srcrect, dst.surface, dstrect));
+        ErrorIfNegative(SDL_LowerBlit(src, srcrect, dst, dstrect));
     }
 
     public static unsafe void LowerBlitScaled(
       Surface src,
       Surface dst
     ) {
-      ErrorIfNegative(SDL_LowerBlitScaled(src.surface, null, dst.surface, null));
+      ErrorIfNegative(SDL_LowerBlitScaled(src, null, dst, null));
     }
 
     public static unsafe void LowerBlitScaled(
@@ -221,7 +213,7 @@ namespace SDLSharp
       Surface dst
     ) {
       fixed(Rect* srcrect = &srcRect)
-        ErrorIfNegative(SDL_LowerBlitScaled(src.surface, srcrect, dst.surface, null));
+        ErrorIfNegative(SDL_LowerBlitScaled(src, srcrect, dst, null));
     }
 
     public static unsafe void LowerBlitScaled(
@@ -230,7 +222,7 @@ namespace SDLSharp
       in Rect dstRect
     ) {
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_LowerBlitScaled(src.surface, null, dst.surface, dstrect));
+        ErrorIfNegative(SDL_LowerBlitScaled(src, null, dst, dstrect));
     }
 
     public static unsafe void LowerBlitScaled(
@@ -241,46 +233,38 @@ namespace SDLSharp
     ) {
       fixed(Rect* srcrect = &srcRect)
       fixed(Rect* dstrect = &dstRect)
-        ErrorIfNegative(SDL_LowerBlitScaled(src.surface, srcrect, dst.surface, dstrect));
+        ErrorIfNegative(SDL_LowerBlitScaled(src, srcrect, dst, dstrect));
     }
 
     public unsafe void Fill(uint color) {
-      ErrorIfNegative(SDL_FillRect(surface, null, color));
+      ErrorIfNegative(SDL_FillRect(this, null, color));
     }
 
     public unsafe void Fill(in Rect rect, uint color) {
       fixed(Rect* rp = &rect)
-        ErrorIfNegative(SDL_FillRect(surface, rp, color));
+        ErrorIfNegative(SDL_FillRect(this, rp, color));
     }
 
     public unsafe void Fill(ReadOnlySpan<Rect> rects, uint color) {
       fixed(Rect* rp = &MemoryMarshal.GetReference(rects))
-        ErrorIfNegative(SDL_FillRects(surface, rp, rects.Length, color));
+        ErrorIfNegative(SDL_FillRects(this, rp, rects.Length, color));
     }
 
     public Surface Convert(uint pixelFormat) {
-      return new Surface(ErrorIfInvalid(SDL_ConvertSurfaceFormat(surface, pixelFormat, 0)));
+      return ErrorIfInvalid(SDL_ConvertSurfaceFormat(this, pixelFormat, 0));
     }
 
     public bool MustLock() {
-      return SDL_MUSTLOCK(surface) == SDL_Bool.True;
+      return ptr->flags.HasFlag(SurfaceFlags.RLEAccelerated);
     }
 
     public void SetRLE(bool enabled) {
-      ErrorIfNegative(SDL_SetSurfaceRLE(surface, enabled ? 1 : 0));
+      ErrorIfNegative(SDL_SetSurfaceRLE(this, enabled ? 1 : 0));
     }
 
     public void SetPalette(Palette p) {
-      ErrorIfNegative(SDL_SetSurfacePalette(surface, p.palette));
+      ErrorIfNegative(SDL_SetSurfacePalette(this, p.palette));
     }
-
-    /*
-    public unsafe void Save(string file) {
-      Span<byte> utf8 = stackalloc byte[SL(file)];
-      StringToUTF8(file, utf8);
-      fixed (byte* ptr = &MemoryMarshal.GetReference(utf8))
-        ErrorIfNegative(SDL_SaveBMP(surface, ptr));
-    }*/
 
     public static Surface Create(
         int width,
@@ -290,7 +274,7 @@ namespace SDLSharp
         uint gmask,
         uint bmask,
         uint amask) {
-      return new Surface(ErrorIfInvalid(SDL_CreateRGBSurface(0, width, height, depth, rmask, gmask, bmask, amask)));
+      return ErrorIfInvalid(SDL_CreateRGBSurface(0, width, height, depth, rmask, gmask, bmask, amask));
     }
 
     public static Surface Create(
@@ -298,16 +282,8 @@ namespace SDLSharp
         int height,
         int depth,
         uint format) {
-      return new Surface(ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormat(0, width, height, depth, format)));
+      return ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormat(0, width, height, depth, format));
     }
-
-    /*
-    public static unsafe Surface From(string file) {
-      Span<byte> utf8 = stackalloc byte[SL(file)];
-      StringToUTF8(file, utf8);
-      fixed (byte* ptr = &MemoryMarshal.GetReference(utf8))
-        return new Surface(ErrorIfInvalid(SDL_LoadBMP(ptr)));
-    }*/
 
     public static unsafe Surface From(
         ReadOnlySpan<byte> data,
@@ -316,7 +292,7 @@ namespace SDLSharp
         in PixelFormatMask mask,
         int pitch){
       fixed (byte* ptr = &MemoryMarshal.GetReference(data))
-        return new Surface(ErrorIfInvalid(SDL_CreateRGBSurfaceFrom(ptr, width, height, mask.BitsPerPixel, pitch, mask.R, mask.G, mask.B, mask.A)));
+        return ErrorIfInvalid(SDL_CreateRGBSurfaceFrom(ptr, width, height, mask.BitsPerPixel, pitch, mask.R, mask.G, mask.B, mask.A));
     }
 
     public static unsafe Surface From(
@@ -327,12 +303,32 @@ namespace SDLSharp
         int pitch,
         uint format) {
       fixed (byte* ptr = &MemoryMarshal.GetReference(data))
-        return new Surface(ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormatFrom(ptr, width, height, depth, pitch, format)));
+        return ErrorIfInvalid(SDL_CreateRGBSurfaceWithFormatFrom(ptr, width, height, depth, pitch, format));
     }
 
-    public void Dispose() {
-      surface.Dispose();
+    public static unsafe Surface LoadBMP(string file) {
+      return ErrorIfInvalid(SDL_LoadBMP_RW(RWOps.FromFile(file, "rb"), 1));
     }
+
+    public static unsafe Surface LoadBMP(RWOps src) {
+      return ErrorIfInvalid(SDL_LoadBMP_RW(src, 0));
+    }
+
+    public unsafe void SaveBMP(string file) {
+      ErrorIfNegative(SDL_SaveBMP_RW(this, RWOps.FromFile(file, "wb"), 1));
+    }
+
+    public unsafe void SaveBMP(RWOps dst) {
+      ErrorIfNegative(SDL_SaveBMP_RW(this, dst, 0));
+    }
+
+    public override bool IsInvalid => handle == IntPtr.Zero;
+
+    override protected bool ReleaseHandle() {
+      SDL_FreeSurface(this.handle);
+      return true;
+    }
+
 
     public SurfacePixels Pixels => new SurfacePixels(this);
 
@@ -342,21 +338,20 @@ namespace SDLSharp
       bool disposed;
 
       internal SurfacePixels(Surface surface) {
-        this.wasLocked = SDL_MUSTLOCK(surface.surface) ==  SDL_Bool.True;
+        this.wasLocked = surface.ptr->flags.HasFlag(SurfaceFlags.RLEAccelerated);
         this.surface = surface;
         if (wasLocked)
-          ErrorIfNegative(SDL_LockSurface(surface.surface));
+          ErrorIfNegative(SDL_LockSurface(surface));
       }
 
       public unsafe Span<byte> Get() {
         var len = surface.Format.BytesPerPixel * surface.Width * surface.Height; 
-        var s = (SDL_Surface*)surface.surface.DangerousGetHandle();
-        return new Span<byte>(s->pixels, len);
+        return new Span<byte>(surface.ptr->pixels, len);
       }
 
       public void Dispose() {
         if (wasLocked && !disposed)
-          SDL_UnlockSurface(surface.surface);
+          SDL_UnlockSurface(surface);
         disposed = true;
       }
     }

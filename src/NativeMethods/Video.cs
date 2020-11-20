@@ -296,7 +296,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern void SDL_SetWindowIcon(
       SDL_WindowPtr window,
-      SDL_SurfacePtr icon
+      Surface icon
     );
 
     [DllImport("SDL2")]

@@ -9,7 +9,7 @@ namespace SDLSharp {
 
     [DllImport("SDL2")]
     public static extern SDL_CursorPtr SDL_CreateColorCursor(
-        SDL_SurfacePtr surface, int hot_x, int hot_y);
+        Surface surface, int hot_x, int hot_y);
 
     [DllImport("SDL2")]
     public static extern SDL_CursorPtr SDL_CreateCursor(

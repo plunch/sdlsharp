@@ -187,7 +187,7 @@ namespace SDLSharp
     }
 
     public void SetIcon(Surface surface) {
-      SDL_SetWindowIcon(handle, surface.surface);
+      SDL_SetWindowIcon(handle, surface);
    }
 
     public void Dispose() {
