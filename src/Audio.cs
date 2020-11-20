@@ -73,6 +73,21 @@ namespace SDLSharp
       fixed(byte* dst = &MemoryMarshal.GetReference(destination))
         SDL_MixAudioFormat(dst, src, format, len, volume);
     }
+
+    public static unsafe AudioStream LoadWAV(RWOps ops) {
+      var fmt = new AudioStreamFormat(default); 
+      byte* buf;
+      uint len;
+      ErrorIfNull((IntPtr)SDL_LoadWAV_RW(ops, 0, out fmt.spec, out buf, out len));
+      return new AudioStream(fmt, (IntPtr)buf, len);
+    }
+
+    public static unsafe AudioStream LoadWAV(string file) {
+      var fmt = new AudioStreamFormat(default); 
+      byte* buf;
+      uint len;
+      ErrorIfNull((IntPtr)SDL_LoadWAV_RW(RWOps.FromFile(file, "rb"), 1, out fmt.spec, out buf, out len));
+      return new AudioStream(fmt, (IntPtr)buf, len);
+    }
   }
 }
-

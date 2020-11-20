@@ -36,15 +36,13 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern void SDL_FreeWAV(byte* buffer);
 
-    /*
     [DllImport("SDL2")]
     public static extern SDL_AudioSpec* SDL_LoadWAV_RW(
-      SDL_RWops* src,
+      RWOps src,
       int freesrc,
-      SDL_AudioSpec* src,
-      byte** audio_buf,
-      uint* audio_len);
-    */
+      out SDL_AudioSpec spec,
+      out byte* audio_buf,
+      out uint audio_len);
 
     [DllImport("SDL2")]
     public static extern /*const char*/ byte* SDL_GetAudioDeviceName(int index, int iscapture);
@@ -122,7 +120,7 @@ namespace SDLSharp {
       public ushort samples;
       ushort padding;
       public uint size;
-      public SDL_AudioCallback? callback;
+      public IntPtr callback; // SDL_AudioCallback
       public void* userdata;
     }
 

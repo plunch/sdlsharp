@@ -47,7 +47,7 @@ namespace SDLSharp
       spec.silence = silenceValue;
       spec.size = bufferSize;
       spec.userdata = null;
-      spec.callback = null;
+      spec.callback = IntPtr.Zero;
     }
 
     internal AudioStreamFormat(SDL_AudioSpec spec) {
