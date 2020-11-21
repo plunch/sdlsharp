@@ -71,6 +71,14 @@ namespace SDLSharp {
       return new Color(r, g, b, a);
     }
 
+    public void Decode(uint pixel, out byte r, out byte g, out byte b) {
+      SDL_GetRGB(pixel, this, out r, out g, out b);
+    }
+
+    public void Decode(uint pixel, out byte r, out byte g, out byte b, out byte a) {
+      SDL_GetRGBA(pixel, this, out r, out g, out b, out a);
+    }
+
     public override bool IsInvalid => handle == IntPtr.Zero;
 
     override protected bool ReleaseHandle() {
