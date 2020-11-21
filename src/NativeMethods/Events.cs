@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 namespace SDLSharp {
   static unsafe partial class NativeMethods {
     [DllImport("SDL2")]
-    public static extern void SDL_AddEventWatch(SDL_EventFilter filter, IntPtr userdata);
+    public static extern void SDL_AddEventWatch(/*SDL_EventFilter*/ IntPtr filter, IntPtr userdata);
 
     [DllImport("SDL2")]
-    public static extern void SDL_DelEventWatch(SDL_EventFilter filter, IntPtr userdata);
+    public static extern void SDL_DelEventWatch(/*SDL_EventFilter*/ IntPtr filter, IntPtr userdata);
 
     [DllImport("SDL2")]
     public static extern byte SDL_EventState(uint type, int state);

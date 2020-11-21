@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using static SDLSharp.NativeMethods;
 using System.Runtime.InteropServices;
 
@@ -92,6 +93,48 @@ namespace SDLSharp {
 
     public static uint RegisterEvents(int count) {
       return SDL_RegisterEvents(count);
+    }
+
+    public delegate void EventWatch(ref Event ev);
+    struct WatchReg {
+      public SDL_EventFilter del;
+      public IntPtr fp;
+      public EventWatch func;
+
+      public WatchReg(EventWatch func) {
+        this.func = func;
+        del = (IntPtr ud, ref Event v) => {
+          try {
+            func(ref v);
+          } catch {
+          }
+        };
+        fp = Marshal.GetFunctionPointerForDelegate(del);
+      }
+    }
+    private static List<WatchReg> watches = new List<WatchReg>();
+
+    public static event EventWatch OnEvent {
+      add {
+        var wr = new WatchReg(value);
+        SDL_AddEventWatch(wr.fp, IntPtr.Zero);
+        lock(watches)
+          watches.Add(wr);
+      }
+      remove {
+        WatchReg w;
+        lock(watches) {
+          int i = watches.FindIndex(x => x.func == value);
+          if (i >= 0) {
+            w = watches[i];
+            watches.RemoveAt(i);
+          } else {
+            return;
+          }
+        }
+
+        SDL_DelEventWatch(w.fp, IntPtr.Zero);
+      }
     }
 
     static internal bool ShouldDisableDropAfterInit(InitFlags flags) {
