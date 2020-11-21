@@ -196,7 +196,31 @@ namespace SDLSharp
 
     public void SetIcon(Surface surface) {
       SDL_SetWindowIcon(this, surface);
-   }
+    }
+
+    public unsafe void GetDisplayGammaRamp(GammaRamp ramp) {
+      fixed(ushort* rp = ramp.R != null ? ramp.R.AsSpan() : null)
+      fixed(ushort* gp = ramp.G != null ? ramp.G.AsSpan() : null)
+      fixed(ushort* bp = ramp.B != null ? ramp.B.AsSpan() : null)
+        SDL_GetWindowGammaRamp(this, rp, gp, bp);
+    }
+
+    public GammaRamp GetDisplayGammaRamp() {
+      var ramp = new GammaRamp() {
+        R = new GammaRampChannel(),
+        G = new GammaRampChannel(),
+        B = new GammaRampChannel(),
+      };
+      GetDisplayGammaRamp(ramp);
+      return ramp;
+    }
+
+    public unsafe void SetDisplayGammaRamp(GammaRamp ramp) {
+      fixed(ushort* rp = ramp.R != null ? ramp.R.AsSpan() : null)
+      fixed(ushort* gp = ramp.G != null ? ramp.G.AsSpan() : null)
+      fixed(ushort* bp = ramp.B != null ? ramp.B.AsSpan() : null)
+        SDL_SetWindowGammaRamp(this,rp, gp, bp);
+    }
 
     public override bool IsInvalid => handle == IntPtr.Zero;
 

@@ -152,9 +152,9 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern int SDL_GetWindowGammaRamp(
       Window window,
-      out ushort red,
-      out ushort green,
-      out ushort blue
+      ushort* red,
+      ushort* green,
+      ushort* blue
     );
 
     [DllImport("SDL2")]
