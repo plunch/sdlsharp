@@ -4,16 +4,16 @@ using System.Runtime.InteropServices;
 namespace SDLSharp {
   static unsafe partial class NativeMethods {
     [DllImport("SDL2")]
-    public static extern void SDL_AddEventWatch(SDL_EventFilter filter, void* userdata);
+    public static extern void SDL_AddEventWatch(SDL_EventFilter filter, IntPtr userdata);
 
     [DllImport("SDL2")]
-    public static extern void SDL_DelEventWatch(SDL_EventFilter filter, void* userdata);
+    public static extern void SDL_DelEventWatch(SDL_EventFilter filter, IntPtr userdata);
 
     [DllImport("SDL2")]
     public static extern byte SDL_EventState(uint type, int state);
 
     [DllImport("SDL2")]
-    public static extern void SDL_FilterEvents(SDL_EventFilter filter, void* userdata);
+    public static extern void SDL_FilterEvents(SDL_EventFilter filter, IntPtr userdata);
 
     [DllImport("SDL2")]
     public static extern void SDL_FlushEvent(uint type);
@@ -22,7 +22,7 @@ namespace SDLSharp {
     public static extern void SDL_FlushEvents(uint minType, uint maxType);
 
     [DllImport("SDL2")]
-    public static extern SDL_Bool SDL_GetEventFilter(out SDL_EventFilter filter, out void* userdata);
+    public static extern SDL_Bool SDL_GetEventFilter(out SDL_EventFilter filter, out IntPtr userdata);
 
     [DllImport("SDL2")]
     public static extern int SDL_GetNumTouchDevices();
@@ -42,8 +42,8 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_HasEvents(uint minType, uint maxType);
 
-    //[DllImport("SDL2")]
-    //public static extern int SDL_LoadDollarTemplates(SDL_TouchID touchId, SDL_RWOps* src)
+    [DllImport("SDL2")]
+    public static extern int SDL_LoadDollarTemplates(long touchId, RWOps src);
 
     [DllImport("SDL2")]
     public static extern int SDL_PeepEvents(
@@ -61,7 +61,7 @@ namespace SDLSharp {
     public static extern void SDL_PumpEvents();
 
     [DllImport("SDL2")]
-    public static extern int SDL_PushEvent(Event* @event);
+    public static extern int SDL_PushEvent(in Event @event);
 
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_QuitRequested();
@@ -72,14 +72,14 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern uint SDL_RegisterEvents(int numevents);
 
-    //[DllImport("SDL2")]
-    //public static extern int SDL_SaveAllDollarTemplates(SDL_RWops* dst);
-    
-    //[DllImport("SDL2")]
-    //public static extern int SDL_SaveDollarTemplate(SDL_GestureID gestureId, SDL_RWops* dst);
+    [DllImport("SDL2")]
+    public static extern int SDL_SaveAllDollarTemplates(RWOps dst);
     
     [DllImport("SDL2")]
-    public static extern void SDL_SetEventFilter(SDL_EventFilter filter, void* userdata);
+    public static extern int SDL_SaveDollarTemplate(long gestureId, RWOps dst);
+    
+    [DllImport("SDL2")]
+    public static extern void SDL_SetEventFilter(SDL_EventFilter filter, IntPtr userdata);
 
     [DllImport("SDL2")]
     public static extern int SDL_WaitEvent(out Event @event);
@@ -88,7 +88,7 @@ namespace SDLSharp {
     public static extern int SDL_WaitEventTimeout(out Event @event, int timeout);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void SDL_EventFilter(void* userdata, Event* @event);
+    public delegate void SDL_EventFilter(IntPtr userdata, ref Event @event);
 
     public enum SDL_eventaction {
       Add,

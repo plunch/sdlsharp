@@ -77,9 +77,8 @@ namespace SDLSharp {
       }
     }
 
-    public static unsafe bool PushEvent(in Event ev) {
-      fixed(Event* ptr = &ev)
-        return ErrorIfNegative(SDL_PushEvent(ptr)) != 0;
+    public static bool PushEvent(in Event ev) {
+      return ErrorIfNegative(SDL_PushEvent(ev)) != 0;
     }
 
     public static unsafe int PushEvents(
@@ -119,11 +118,5 @@ namespace SDLSharp {
       SDL.IgnoreEvent[EventType.DropComplete] = true;
     }
 
-  }
-
-  public enum EventState {
-    Query = -1,
-    Disable = 0,
-    Enable = 1,
   }
 }
