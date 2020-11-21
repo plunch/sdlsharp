@@ -93,5 +93,17 @@ namespace SDLSharp
       SDL_DestroyTexture(this.handle);
       return true;
     }
+
+    public override string ToString() {
+      int w, h;
+      TextureAccess access;
+      uint format;
+
+      int err = SDL_QueryTexture(this, out format, out access, out w, out h);
+      if (err < 0)
+        return "Texture <unknown>";
+      else
+        return $"Texture <{w}x{h} {access},Format={PixelFormat.GetName(format)}>";
+    }
   }
 }

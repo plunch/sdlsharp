@@ -82,6 +82,17 @@ namespace SDLSharp
       }
     }
 
+    public Rect Bounds {
+      get {
+        return new Rectangle(Position, Size);
+      }
+      set {
+        var (x, y, w, h) = value;
+        Position = new  Point(x, y);
+        Size = new Size(w, h);
+      }
+    }
+
     public BorderSize? BorderSize {
       get {
         int top, left, bottom, right;
@@ -280,6 +291,10 @@ namespace SDLSharp
     override protected bool ReleaseHandle() {
       NativeMethods.SDL_DestroyWindow(this.handle);
       return true;
+    }
+
+    public override string ToString() {
+      return $"Window{ID} \"{Title}\" {(Rectangle)Bounds}";
     }
 
     public static Window FromID(uint id) {

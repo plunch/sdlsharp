@@ -82,6 +82,10 @@ namespace SDLSharp
       }
     }
 
+    public override string ToString() {
+      return $"Joystick{ID} ({Guid}/{Name})";
+    }
+
     public override bool IsInvalid => handle == IntPtr.Zero;
 
     override protected bool ReleaseHandle() {

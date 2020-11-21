@@ -24,5 +24,10 @@ namespace SDLSharp
             mode.h,
             mode.refresh_rate,
             (IntPtr)mode.driverdata) {}
+
+    public override string ToString() {
+      string? formatName = PixelFormat.GetName(Format) ?? Format.ToString();
+      return $"{{Width={Width},Height={Height},PixelFormat={formatName},RefreshRate={RefreshRate}}}";
+    }
   }
 }

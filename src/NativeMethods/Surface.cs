@@ -235,6 +235,7 @@ namespace SDLSharp {
     }
   }
 
+  [Flags]
   public enum SurfaceFlags {
     None = 0,
     SWSurface = 0,

@@ -22,7 +22,7 @@ namespace SDLSharp
     public RendererInfoFormats Formats { get; }
 
     public override string ToString() {
-      return $"{{name={Name},Flags={Flags},MaxTextureWidth={MaxTextureWidth},MaxTextureHeight={MaxTextureHeight},formats=[{Formats.Count}]}}";
+      return $"{{Name={Name},Flags={Flags},MaxTextureWidth={MaxTextureWidth},MaxTextureHeight={MaxTextureHeight},formats=[{Formats.Count}]}}";
     }
 
     public readonly struct RendererInfoFormats: IReadOnlyList<uint> {

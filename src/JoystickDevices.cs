@@ -33,6 +33,10 @@ namespace SDLSharp
     public GameController OpenController() {
       return ErrorIfInvalid(SDL_GameControllerOpen(index));
     }
+
+    public override string ToString() {
+      return $"JoystickDevice{Index} ({Guid}/{Name})";
+    }
   }
 
   public class JoystickDevices : IReadOnlyList<JoystickDevice> {

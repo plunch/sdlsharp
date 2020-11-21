@@ -17,6 +17,9 @@ namespace SDLSharp
       this.Horizontal = horizontal;
       this.Vertical = vertical;
     }
-  }
 
+    public override string ToString() {
+      return $"{{Diagonal={Diagonal},Horizontal={Horizontal},Vertical={Vertical}}}";
+    }
+  }
 }

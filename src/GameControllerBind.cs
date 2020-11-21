@@ -33,12 +33,20 @@ namespace SDLSharp
 
     internal GameControllerButtonBind(SDL_GameControllerButtonBind bind) : base(bind) {
     }
+
+    public override string ToString() {
+      return $"b{Button}";
+    }
   }
 
   public class GameControllerAxisBind : GameControllerBind {
     public int Axis => bind.value.axis;
 
     internal GameControllerAxisBind(SDL_GameControllerButtonBind bind) : base(bind) {
+    }
+
+    public override string ToString() {
+      return $"a{Axis}";
     }
   }
 
@@ -47,6 +55,10 @@ namespace SDLSharp
     public int Mask => bind.value.hat.hat_mask;
 
     internal GameControllerHatBind(SDL_GameControllerButtonBind bind) : base(bind) {
+    }
+
+    public override string ToString() {
+      return $"h{Hat}.{Mask}";
     }
   }
 }

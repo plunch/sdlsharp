@@ -29,8 +29,6 @@ namespace SDLSharp
       gm.SetHandle(IntPtr.Zero);
     }
 
-    internal static byte[] ZeroGameControllerGUID = new byte[16];
-
     public unsafe string Name => ErrorIfNull(UTF8ToString(SDL_GameControllerName(this))) ?? "";
 
     public bool IsAttached {
@@ -105,6 +103,10 @@ namespace SDLSharp
       set {
         ErrorIfNegative(SDL_GameControllerEventState(value ? 0 : 1));
       }
+    }
+
+    public override string ToString() {
+      return Joystick.ToString().Replace("Joystick", "GameController");
     }
 
     public override bool IsInvalid => handle == IntPtr.Zero;

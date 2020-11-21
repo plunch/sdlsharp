@@ -18,5 +18,9 @@ namespace SDLSharp
       Bottom = bottom;
       Right = right;
     }
+
+    public override string ToString() {
+      return $"{{Top={Top},Left={Left},Right={Right},Bottom={Bottom}}}";
+    }
   }
 }

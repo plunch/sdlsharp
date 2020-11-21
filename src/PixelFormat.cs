@@ -85,10 +85,15 @@ namespace SDLSharp {
       NativeMethods.SDL_FreeFormat(this.handle);
       return true;
     }
-    public static string? GetName(uint dataFormat) {
-      return UTF8ToString(SDL_GetPixelFormatName(dataFormat));
+
+    public override string ToString() {
+      return GetName(this.DataFormat);
     }
-    public static string? GetName(PixelDataFormat dataFormat) {
+
+    public static string GetName(uint dataFormat) {
+      return UTF8ToString(SDL_GetPixelFormatName(dataFormat)) ?? ((PixelDataFormat)dataFormat).ToString();
+    }
+    public static string GetName(PixelDataFormat dataFormat) {
       return GetName((uint)dataFormat);
     }
 

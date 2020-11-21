@@ -33,5 +33,9 @@ namespace SDLSharp
     public static implicit operator Color(in System.Drawing.Color clr) {
       return new Color(clr.R, clr.G, clr.B, clr.A);
     }
+
+    public override string ToString() {
+      return ((System.Drawing.Color)this).ToString();
+    }
   }
 }

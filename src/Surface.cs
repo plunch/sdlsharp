@@ -333,6 +333,10 @@ namespace SDLSharp
       return true;
     }
 
+    public override string ToString() {
+      return $"Surface <{Width}x{Height},Format={Format}>";
+    }
+
 
     public SurfacePixels Pixels => new SurfacePixels(this);
 

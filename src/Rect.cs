@@ -127,5 +127,10 @@ namespace SDLSharp
     public static implicit operator Rect(in Rectangle b) {
       return new Rect(b.X, b.Y, b.Width, b.Height);
     }
+
+    public override string ToString() {
+      Rectangle r = this;
+      return r.ToString();
+    }
   }
 }
