@@ -15,7 +15,22 @@ namespace SDLSharp
       SetHandle(h);
     }
 
-    public UInt32 ID {
+    public Window(string title, in Point p, WindowFlags flags = WindowFlags.None)
+      : this(title, p.x, p.y, flags) {}
+    public Window(string title, in Rect r, WindowFlags flags = WindowFlags.None)
+      : this(title, r.x, r.y, r.w, r.h, flags) {}
+
+    public Window(string title, int x, int y, int w, int h, WindowFlags flags = WindowFlags.None) : this() {
+      var wnd = Create(title, x, y, w, h, flags);
+      SetHandle(wnd.handle);
+      wnd.SetHandle(IntPtr.Zero);
+    }
+
+    public Window(string title, int w, int h, WindowFlags flags = WindowFlags.None)
+      : this(title, WINDOWPOS_UNDEFINED, WINDOWPOS_UNDEFINED, w, h, flags) {}
+
+
+    public uint ID {
       get { return ErrorIfZero(SDL_GetWindowID(this)); }
     }
 
@@ -283,7 +298,16 @@ namespace SDLSharp
     public static int UndefinedPosition => WINDOWPOS_UNDEFINED;
     public static int CenteredPosition => WINDOWPOS_CENTERED;
 
-    public unsafe static Window Create(string title, int x, int y, int w, int h, WindowFlags flags) {
+    public static Window Create(string title, in Point p, WindowFlags flags = WindowFlags.None)
+      => Create(title, p.x, p.y, flags);
+
+    public static Window Create(string title, in Rect p, WindowFlags flags = WindowFlags.None)
+      => Create(title, p.x, p.y, p.w, p.h, flags);
+
+    public static Window Create(string title, int w, int h, WindowFlags flags = WindowFlags.None)
+      => Create(title, WINDOWPOS_UNDEFINED, WINDOWPOS_UNDEFINED, w, h, flags);
+
+    public unsafe static Window Create(string title, int x, int y, int w, int h, WindowFlags flags = WindowFlags.None) {
       Span<byte> utf8 = stackalloc byte[SL(title)];
       var written = Encoding.UTF8.GetBytes(title, utf8);
       utf8[written] = 0;
