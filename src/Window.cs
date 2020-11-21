@@ -67,6 +67,21 @@ namespace SDLSharp
       }
     }
 
+    public BorderSize? BorderSize {
+      get {
+        int top, left, bottom, right;
+        int ret = SDL_GetWindowBordersSize(this, out top, out left, out bottom, out right);
+        if (ret < 0) {
+          var err = GetError();
+          if (err != null)
+            throw err;
+          else
+            return null;
+        }
+        return new BorderSize(top, left, bottom, right);
+      }
+    }
+
     public float Brightness {
       get { return SDL_GetWindowBrightness(this); }
       set { SDL_SetWindowBrightness(this, value); }
@@ -170,8 +185,8 @@ namespace SDLSharp
 
     public void Restore() {
       SDL_RaiseWindow(this);
-
     }
+
     public void UpdateSurface() {
       ErrorIfNegative(SDL_UpdateWindowSurface(this));
     }
