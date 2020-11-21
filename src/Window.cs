@@ -184,7 +184,7 @@ namespace SDLSharp
     }
 
     public void Restore() {
-      SDL_RaiseWindow(this);
+      SDL_RestoreWindow(this);
     }
 
     public void UpdateSurface() {
