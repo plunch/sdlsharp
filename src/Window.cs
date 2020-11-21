@@ -187,6 +187,10 @@ namespace SDLSharp
       SDL_RestoreWindow(this);
     }
 
+    public void Focus() {
+      SDL_SetWindowInputFocus(this);
+    }
+
     public void UpdateSurface() {
       ErrorIfNegative(SDL_UpdateWindowSurface(this));
     }
@@ -286,6 +290,10 @@ namespace SDLSharp
       fixed (byte* utf8title = utf8) {
         return ErrorIfNull(SDL_CreateWindow(utf8title, x, y, w, h, flags));
       }
+    }
+
+    public static Window FromHandle(IntPtr handle) {
+      return ErrorIfInvalid(SDL_CreateWindowFrom(handle));
     }
   }
 }

@@ -21,7 +21,7 @@ namespace SDLSharp {
     );
 
     [DllImport("SDL2")]
-    public static extern Window SDL_CreateWindowFrom(/*const*/ void* data);
+    public static extern Window SDL_CreateWindowFrom(IntPtr data);
 
     [DllImport("SDL2")]
     public static extern int SDL_CreateWindowAndRenderer(
@@ -435,13 +435,6 @@ namespace SDLSharp {
       public /*const*/ SDL_MessageBoxButtonData* buttons;
       public /*const*/ SDL_MessageBoxColorScheme* colorScheme;
     }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct SDL_WindowEvent {
-      public UInt32 type, timestamp, windowID;
-      public byte @event;
-      public int data1, data2;
-    }
   }
 
   public enum HitTestResult {
@@ -455,13 +448,6 @@ namespace SDLSharp {
     ResizeLeft,
   }
 
-
-  public enum SDL_MessageBoxButtonFlags {
-    ReturnKeyDefault = 1,
-    EscapeKeyDefault = 2,
-  }
-
-
   public enum MessageBoxFlags : uint {
     Error = 0x10,
     Warning = 0x20,
@@ -469,7 +455,7 @@ namespace SDLSharp {
   }
 
   [Flags]
-  public enum WindowFlags : UInt32 {
+  public enum WindowFlags : uint {
     None = 0,
     Fullscreen = 0x1,
     OpenGL = 0x2,
