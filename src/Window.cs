@@ -237,6 +237,25 @@ namespace SDLSharp
         SDL_SetWindowGammaRamp(this,rp, gp, bp);
     }
 
+    public delegate HitTestResult HitTest(Window window, in Point area);
+    SDL_HitTest? ht;
+    public void SetHitTest(HitTest? test) {
+      if (test == null) {
+        SDL_SetWindowHitTest(this, IntPtr.Zero, IntPtr.Zero);
+        ht = null;
+      } else {
+        ht = (IntPtr w, in Point p, IntPtr data) => {
+          try {
+            return test(this, p);
+          } catch {
+            return HitTestResult.Normal;
+          }
+        };
+        var ptr = Marshal.GetFunctionPointerForDelegate<SDL_HitTest>(ht);
+        SDL_SetWindowHitTest(this, ptr, IntPtr.Zero);
+      }
+    }
+
     public override bool IsInvalid => handle == IntPtr.Zero;
 
     override protected bool ReleaseHandle() {

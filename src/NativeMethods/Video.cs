@@ -294,7 +294,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern void SDL_SetWindowHitTest(
       Window window,
-      SDL_HitTest callback,
+      IntPtr callback, // SDL_HitTest
       IntPtr callback_data
     );
 
@@ -396,22 +396,11 @@ namespace SDLSharp {
     );
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate SDL_HitTestResult SDL_HitTest(
-      Window window,
-      /*const*/ Point* area,
+    public delegate HitTestResult SDL_HitTest(
+      IntPtr window,
+      in Point area,
       IntPtr data
     );
-
-    public enum SDL_HitTestResult {
-      Normal,
-      Draggable,
-      ResizeTopLeft,
-      RezizeTop,
-      ResizeTopRight,
-      ResizeBottom,
-      ResizeBottomLeft,
-      ResizeLeft,
-    }
 
     internal static readonly int WINDOWPOS_UNDEFINED = 0x1FFF0000;
     internal static readonly int WINDOWPOS_CENTERED = 0x2FFF0000;
@@ -454,6 +443,18 @@ namespace SDLSharp {
       public int data1, data2;
     }
   }
+
+  public enum HitTestResult {
+    Normal,
+    Draggable,
+    ResizeTopLeft,
+    RezizeTop,
+    ResizeTopRight,
+    ResizeBottom,
+    ResizeBottomLeft,
+    ResizeLeft,
+  }
+
 
   public enum SDL_MessageBoxButtonFlags {
     ReturnKeyDefault = 1,
