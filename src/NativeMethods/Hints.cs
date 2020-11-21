@@ -1,62 +1,63 @@
+using System;
 using System.Runtime.InteropServices;
 
 namespace SDLSharp {
   static unsafe partial class NativeMethods {
     [DllImport("SDL2")]
     public static extern void SDL_AddHintCallback(
-        /* const */ char* name,
-        HintCallback callback,
-        void* userdata
+        /* const char */ byte* name,
+        /*HintCallback*/ IntPtr callback,
+        IntPtr userdata
     );
 
     [DllImport("SDL2")]
     public static extern void SDL_DelHintCallback(
-        /* const */ char* name,
-        HintCallback callback,
-        void* userdata
-    );
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void HintCallback(
-        void* userdata,
-        /* const */ char* name,
-        /* const */ char* oldValue,
-        /* const */ char* newValue
+        /* const char */ byte* name,
+        /*HintCallback*/ IntPtr callback,
+        IntPtr userdata
     );
 
     [DllImport("SDL2")]
     public static extern void SDL_ClearHints();
 
     [DllImport("SDL2")]
-    public static extern char* SDL_GetHint(/* const */char* name);
+    public static extern /*char*/ byte* SDL_GetHint(/* const char*/byte* name);
 
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_GetHintBoolean(
-        /* const */char* name,
+        /* const char*/byte* name,
         SDL_Bool default_value
     );
 
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_SetHint(
-        /* const */char* name,
-        /* const */char* value
+        /* const char*/byte* name,
+        /* const char*/byte* value
     );
 
     [DllImport("SDL2")]
     public static extern SDL_Bool SDL_SetHintWithPriority(
-        /* const */char* name,
-        /* const */char* value,
+        /* const char*/byte* name,
+        /* const char*/byte* value,
         HintPriority priority
     );
 
-    public enum HintPriority {
-      Default = 0,
-      Normal = 1,
-      Override = 2,
-    }
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void SDL_HintCallback(
+        IntPtr userdata,
+        /* const char*/ byte* name,
+        /* const char*/ byte* oldValue,
+        /* const char*/ byte* newValue
+    );
   }
 
-  static class Hint {
+  public enum HintPriority {
+    Default = 0,
+    Normal = 1,
+    Override = 2,
+  }
+
+  static class HintNames {
     public const string FramebufferAcceleration = "SDL_FRAMEBUFFER_ACCELERATION";
     public const string RenderDriver = "SDL_RENDER_DRIVER";
     public const string RenderOpenGLShaders = "SDL_RENDER_OPENGL_SHADERS";

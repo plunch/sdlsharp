@@ -60,6 +60,12 @@ namespace SDLSharp {
       SDL_PumpEvents();
     }
 
+    public void Remove(EventType type)
+      => SDL_FlushEvent((uint)type);
+    public void Remove(EventType start, EventType end)
+      => SDL_FlushEvents((uint)start, (uint)end);
+
+
     public void Filter(EventFilter filter) {
       ExceptionDispatchInfo? edi = null;
       
