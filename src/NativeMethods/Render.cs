@@ -511,6 +511,7 @@ namespace SDLSharp {
 
   [Flags]
   public enum RendererFlags : uint {
+    None = 0,
     Software = 1,
     Accelerated = 2,
     PresentVSync = 4,

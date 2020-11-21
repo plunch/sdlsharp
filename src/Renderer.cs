@@ -17,6 +17,21 @@ namespace SDLSharp
       SetHandle(h);
     }
 
+    public Renderer(
+        Window window,
+        int index = -1,
+        RendererFlags flags = RendererFlags.None
+    ) :this() {
+      var rend = Create(window, index, flags);
+      SetHandle(rend.handle);
+      rend.SetHandle(IntPtr.Zero);
+    }
+
+    public Renderer(Surface surf) : this() {
+      var rend = Create(surf);
+      SetHandle(rend.handle);
+      rend.SetHandle(IntPtr.Zero);
+    }
 
     public RendererInfo Info {
       get {
@@ -251,8 +266,11 @@ namespace SDLSharp
       return true;
     }
 
-    public static Renderer Create(Window window, int index, RendererFlags flags)
+    public static Renderer Create(Window window, int index = -1, RendererFlags flags = RendererFlags.None)
       => ErrorIfInvalid(SDL_CreateRenderer(window, index, flags));
+
+    public static Renderer Create(Surface surf)
+      => ErrorIfInvalid(SDL_CreateSoftwareRenderer(surf));
 
     public Texture CreateTexture(Surface surface) {
       return ErrorIfInvalid(SDL_CreateTextureFromSurface(this, surface));
