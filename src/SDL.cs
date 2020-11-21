@@ -39,7 +39,7 @@ namespace SDLSharp {
     }
 
     public static unsafe string RuntimeRevision => UTF8ToString(SDL_GetRevision()) ?? "";
-    public static unsafe int RuntimeRevisionNumer => SDL_GetRevisionNumber();
+    public static unsafe int RuntimeRevisionNumber => SDL_GetRevisionNumber();
 
     static internal bool ShouldDisableDropAfterInit(InitFlags flags) {
       var initsEvent
