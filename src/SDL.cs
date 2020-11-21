@@ -6,6 +6,8 @@ using System.Runtime.ExceptionServices;
 
 namespace SDLSharp {
   public static class SDL {
+    public static Hints Hints { get; } = new Hints();
+
     public static void Init(InitFlags flags = InitFlags.Nothing) {
       bool disableDrop = ShouldDisableDropAfterInit(flags);
       ErrorIfNegative(SDL_Init(flags));
