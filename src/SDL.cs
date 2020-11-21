@@ -31,6 +31,16 @@ namespace SDLSharp {
     public static bool QuitRequested()
       => SDL_QuitRequested() == SDL_Bool.True;
 
+    public static Version RuntimeVersion {
+      get {
+        SDL_GetVersion(out var v);
+        return new Version(v.major, v.minor, v.patch, 0);
+      }
+    }
+
+    public static unsafe string RuntimeRevision => UTF8ToString(SDL_GetRevision()) ?? "";
+    public static unsafe int RuntimeRevisionNumer => SDL_GetRevisionNumber();
+
     static internal bool ShouldDisableDropAfterInit(InitFlags flags) {
       var initsEvent
         = InitFlags.Video
