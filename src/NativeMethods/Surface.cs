@@ -34,7 +34,7 @@ namespace SDLSharp {
     [DllImport("SDL2")]
     public static extern Surface SDL_ConvertSurface(
       Surface src,
-      /*const*/ SDL_PixelFormat* fmt,
+      /*const*/ PixelFormat fmt,
       UInt32 flags
     );
 

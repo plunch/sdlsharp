@@ -254,6 +254,10 @@ namespace SDLSharp
       return ErrorIfInvalid(SDL_ConvertSurfaceFormat(this, pixelFormat, 0));
     }
 
+    public Surface Convert(PixelFormat pixelFormat) {
+      return ErrorIfInvalid(SDL_ConvertSurface(this, pixelFormat, 0));
+    }
+
     public bool MustLock() {
       return ptr->flags.HasFlag(SurfaceFlags.RLEAccelerated);
     }
