@@ -48,88 +48,75 @@ namespace SDLSharp
       h = this.h;
     }
 
-    public static unsafe bool TryIntersect(in Rect a, in Rect b, out Rect result) {
-      fixed(Rect* aptr = &a)
-      fixed(Rect* bptr = &b)
-        return SDL_IntersectRect(aptr, bptr, out result) == SDL_Bool.True;
+    public static bool TryIntersect(in Rect a, in Rect b, out Rect result) {
+        return SDL_IntersectRect(a, b, out result) == SDL_Bool.True;
     }
 
-    public static unsafe bool Contains(in Point pt, in Rect rect) {
-      fixed(Point* ptptr = &pt)
-      fixed(Rect* rectptr = &rect)
-        return SDL_PointInRect(ptptr, rectptr) == SDL_Bool.True;
+    public static bool Contains(in Point pt, in Rect rect) {
+      return SDL_PointInRect(pt, rect) == SDL_Bool.True;
     }
 
-    public static unsafe Rect Union(in Rect a, in Rect b) {
+    public static Rect Union(in Rect a, in Rect b) {
       Rect result;
-      fixed(Rect* aptr = &a)
-      fixed(Rect* bptr = &b)
-        SDL_UnionRect(aptr, bptr, out result);
+      SDL_UnionRect(a, b, out result);
       return result;
     }
 
-    public static unsafe bool IsEmpty(in Rect a) {
-      fixed(Rect* ptr = &a)
-        return SDL_RectEmpty(ptr) == SDL_Bool.True;
+    public static void Union(in Rect a, in Rect b, out Rect result) {
+      SDL_UnionRect(a, b, out result);
+    }
+
+    public static bool IsEmpty(in Rect a) {
+      return SDL_RectEmpty(a) == SDL_Bool.True;
     }
 
     public static unsafe bool Equals(in Rect a, in Rect b) {
-      fixed(Rect* aptr = &a)
-      fixed(Rect* bptr = &b)
-        return SDL_RectEquals(aptr, bptr) == SDL_Bool.True;
+      return SDL_RectEquals(a, b) == SDL_Bool.True;
     }
 
     public static unsafe bool HasIntersection(in Rect a, in Rect b) {
-      fixed(Rect* aptr = &a)
-      fixed(Rect* bptr = &b)
-        return SDL_HasIntersection(aptr, bptr) == SDL_Bool.True;
+      return SDL_HasIntersection(a, b) == SDL_Bool.True;
     }
 
-    public static unsafe bool HasIntersection(in Rect rect, int x1, int y1, int x2, int y2) {
-      fixed(Rect* rectptr = &rect)
-        return SDL_IntersectRectAndLine(rectptr, &x1, &y1, &x2, &y2) ==  SDL_Bool.True;
+    public static unsafe bool HasIntersection(in Rect rect, ref int x1, ref int y1, ref int x2, ref int y2) {
+      return SDL_IntersectRectAndLine(rect, ref x1, ref y1, ref x2, ref y2) ==  SDL_Bool.True;
     }
 
-    public static unsafe bool HasIntersection(in Rect rect, in Point a, in Point b) {
-      fixed(Rect* rectptr = &rect)
-      fixed(Point* aptr = &a)
-      fixed(Point* bptr = &b)
-        return SDL_IntersectRectAndLine(
-            rectptr,
-            &aptr->x,
-            &aptr->y,
-            &bptr->x,
-            &bptr->y
-        ) == SDL_Bool.True;
+    public static unsafe bool HasIntersection(in Rect rect, ref Point a, ref Point b) {
+      return SDL_IntersectRectAndLine(
+          rect,
+          ref a.x,
+          ref a.y,
+          ref b.x,
+          ref b.y
+      ) == SDL_Bool.True;
     }
 
     public static unsafe Rect EnclosePoints(ReadOnlySpan<Point> points) {
       Rect result;
       fixed (Point* pointptr = &MemoryMarshal.GetReference(points))
-        SDL_EnclosePoints(pointptr, points.Length, null, out result);
+        SDL_EnclosePoints(pointptr, points.Length, IntPtr.Zero, out result);
       return result;
     }
 
     public static unsafe Rect EnclosePoints(ReadOnlySpan<Point> points, out bool enclosed) {
       Rect result;
       fixed (Point* pointptr = &MemoryMarshal.GetReference(points))
-        enclosed = SDL_EnclosePoints(pointptr, points.Length, null, out result) == SDL_Bool.True;
+        enclosed = SDL_EnclosePoints(pointptr, points.Length, IntPtr.Zero, out result) == SDL_Bool.True;
       return result;
     }
 
     public static unsafe Rect EnclosePoints(ReadOnlySpan<Point> points, in Rect clip) {
       Rect result;
       fixed (Point* pointptr = &MemoryMarshal.GetReference(points))
-      fixed (Rect* clipptr = &clip)
-        SDL_EnclosePoints(pointptr, points.Length, clipptr, out result);
+        SDL_EnclosePoints(pointptr, points.Length, clip, out result);
       return result;
     }
 
     public static unsafe Rect EnclosePoints(ReadOnlySpan<Point> points, in Rect clip, out bool enclosed) {
       Rect result;
       fixed (Point* pointptr = &MemoryMarshal.GetReference(points))
-      fixed (Rect* clipptr = &clip)
-        enclosed = SDL_EnclosePoints(pointptr, points.Length, clipptr, out result) == SDL_Bool.True;
+        enclosed = SDL_EnclosePoints(pointptr, points.Length, clip, out result) == SDL_Bool.True;
       return result;
     }
 
