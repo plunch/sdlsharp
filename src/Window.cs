@@ -142,6 +142,12 @@ namespace SDLSharp
       }
     }
 
+    public Surface Surface {
+      get {
+        return new Surface(ErrorIfNull(SDL_GetWindowSurface(this)), false);
+      }
+    }
+
     public void Hide() {
       SDL_HideWindow(this);
     }

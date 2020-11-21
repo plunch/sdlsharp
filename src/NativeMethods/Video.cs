@@ -207,6 +207,11 @@ namespace SDLSharp {
     );
 
     [DllImport("SDL2")]
+    public static extern IntPtr SDL_GetWindowSurface(
+      Window window
+    );
+
+    [DllImport("SDL2")]
     public static extern /*const char*/ byte* SDL_GetWindowTitle(
       Window window
     );

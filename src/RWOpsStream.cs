@@ -31,14 +31,7 @@ namespace SDLSharp {
       set => SeekResult(ops.Seek(value, 0));
     }
 
-    public override long Length {
-      get {
-        long p = Position;
-        long len = ops.Seek(0, 2);
-        Position = p;
-        return SeekResult(len);
-      }
-    }
+    public override long Length => ops.Size();
 
     public override bool CanWrite => true;
     public override bool CanSeek => ops.Tell() != -1;

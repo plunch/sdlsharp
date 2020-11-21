@@ -7,10 +7,21 @@ namespace SDLSharp {
     public static extern /*const*/byte* SDL_GetError();
 
     [DllImport("SDL2")]
-    public static extern int SDL_SetError(/*const*/ char* fmt, __arglist);
+    public static extern int SDL_SetError(/*const char*/ byte* fmt, __arglist);
 
     [DllImport("SDL2")]
     public static extern void SDL_ClearError();
+
+    public static void SetError(Exception ex) {
+      SetError(ex.ToString());
+    }
+
+    public static unsafe void SetError(string error) {
+      const string fmt = "%s";
+      Span<byte> buf = stackalloc byte[SL(fmt) + SL(error)];
+      fixed(byte* ptr = buf)
+        SDL_SetError(ptr, __arglist(ptr + SL(fmt)));
+    }
 
     public static Exception? GetError() {
       var err = SDL_GetError();

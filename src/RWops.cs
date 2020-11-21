@@ -92,6 +92,14 @@ namespace SDLSharp {
       ret.memoryHandle = handle;
       return ret;
     }
+
+    public static RWOps From(IRWOps ops, int bufferSize = 1024*4) {
+      return new RWOpsFromInterface(ops, bufferSize);
+    }
+
+    public static RWOps FromStream(System.IO.Stream stream, bool close = true, int bufferSize = 1024*4) {
+      return new RWOpsFromInterface(new StreamRWOps(stream, close), bufferSize);
+    }
   }
 
   public class RWOpsFromMemory : RWOps {

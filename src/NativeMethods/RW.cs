@@ -19,7 +19,7 @@ namespace SDLSharp {
     public static extern RWOpsFromMemory SDL_RWFromConstMem(IntPtr mem, int size);
 
     [DllImport("SDL2")]
-    public static extern SDL_RWopsAllocationPtr SDL_AllocRW();
+    public static extern RWOpsFromInterface SDL_AllocRW();
 
     [DllImport("SDL2")]
     public static extern void SDL_FreeRW(IntPtr area);
@@ -86,16 +86,6 @@ namespace SDLSharp {
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate int SDL_RWopsClose(SDL_RWops* io);
-  }
-
-  class SDL_RWopsAllocationPtr : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid {
-    private SDL_RWopsAllocationPtr() : base(true) {
-    }
-
-    override protected bool ReleaseHandle() {
-      NativeMethods.SDL_FreeRW(this.handle);
-      return true;
-    }
   }
 
   public enum RWOpsType : uint {
