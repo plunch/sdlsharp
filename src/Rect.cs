@@ -78,11 +78,11 @@ namespace SDLSharp
       return SDL_HasIntersection(a, b) == SDL_Bool.True;
     }
 
-    public static unsafe bool HasIntersection(in Rect rect, ref int x1, ref int y1, ref int x2, ref int y2) {
+    public static unsafe bool IntersectLine(in Rect rect, ref int x1, ref int y1, ref int x2, ref int y2) {
       return SDL_IntersectRectAndLine(rect, ref x1, ref y1, ref x2, ref y2) ==  SDL_Bool.True;
     }
 
-    public static unsafe bool HasIntersection(in Rect rect, ref Point a, ref Point b) {
+    public static unsafe bool IntersectLine(in Rect rect, ref Point a, ref Point b) {
       return SDL_IntersectRectAndLine(
           rect,
           ref a.x,
