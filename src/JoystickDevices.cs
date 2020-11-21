@@ -24,9 +24,14 @@ namespace SDLSharp
         return new Guid(b);
       }
     }
+    public bool IsController => SDL_IsGameController(index) == SDL_Bool.True;
 
     public Joystick Open() {
       return ErrorIfInvalid(SDL_JoystickOpen(index));
+    }
+
+    public GameController OpenController() {
+      return ErrorIfInvalid(SDL_GameControllerOpen(index));
     }
   }
 

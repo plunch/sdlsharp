@@ -6,7 +6,7 @@ using static SDLSharp.NativeMethods;
 
 namespace SDLSharp
 {
-  public class JoystickAxes : IReadOnlyList<int> {
+  public class JoystickAxes : IReadOnlyList<short> {
     readonly Joystick j;
 
     internal JoystickAxes(Joystick j) {
@@ -15,9 +15,9 @@ namespace SDLSharp
 
     public int Count => ErrorIfNegative(SDL_JoystickNumAxes(j));
 
-    public int this[int index] {
+    public short this[int index] {
       get {
-        int v = SDL_JoystickGetAxis(j, index);
+        short v = SDL_JoystickGetAxis(j, index);
         if (v == 0) {
           var err = GetError();
           if (err != null) throw err;
@@ -26,13 +26,13 @@ namespace SDLSharp
       }
     }
     
-    IEnumerable<int> Enumerate() {
+    IEnumerable<short> Enumerate() {
       int c = Count;
       for (int i = 0; i < c; ++i)
         yield return this[i];
     }
 
-    public IEnumerator<int> GetEnumerator() {
+    public IEnumerator<short> GetEnumerator() {
       return this.Enumerate().GetEnumerator();
     }
 
