@@ -64,7 +64,7 @@ namespace SDLSharp
       Rect result;
       fixed(Rect* aptr = &a)
       fixed(Rect* bptr = &b)
-        SDL_IntersectRect(aptr, bptr, out result);
+        SDL_UnionRect(aptr, bptr, out result);
       return result;
     }
 
