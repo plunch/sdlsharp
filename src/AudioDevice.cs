@@ -52,6 +52,10 @@ namespace SDLSharp
     public void Dispose() {
       Dispose(true);
     }
+
+    public override string ToString() {
+      return $"AudioDevice{id} ({Status},QueueSize={QueueSize})";
+    }
   }
 
   public class AudioInputDevice : AudioDevice {
@@ -61,6 +65,10 @@ namespace SDLSharp
       fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
         return (int)SDL_DequeueAudio(id, ptr, (uint)buffer.Length);
     }
+
+    public override string ToString() {
+      return base.ToString().Replace("AudioDevice", "AudioInputDevice");
+    }
   }
 
   public class AudioOutputDevice : AudioDevice {
@@ -69,6 +77,10 @@ namespace SDLSharp
     public unsafe void Enqueue(ReadOnlySpan<byte> buffer) {
       fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
         ErrorIfNegative(SDL_QueueAudio(id, ptr, (uint)buffer.Length));
+    }
+
+    public override string ToString() {
+      return base.ToString().Replace("AudioDevice", "AudioOutputDevice");
     }
   }
 }

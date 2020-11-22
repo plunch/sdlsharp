@@ -53,5 +53,9 @@ namespace SDLSharp
     internal AudioStreamFormat(SDL_AudioSpec spec) {
       this.spec = spec;
     }
+
+    public override string ToString() {
+      return $"{nameof(AudioStreamFormat)} [Frequency={Frequency},Format={Format},Channels={Channels},Silence={SilenceValue},BufferSize={BufferSize}]";
+    }
   }
 }

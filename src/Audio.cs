@@ -8,8 +8,8 @@ namespace SDLSharp
 {
   public static class Audio {
     public static AudioDrivers Drivers { get; } =  new AudioDrivers();
-    public static AudioDevices InputDevices { get; } =  new AudioDevices(0);
-    public static AudioDevices OutputDevices { get; } =  new AudioDevices(1);
+    public static AudioDevices InputDevices { get; } =  new AudioDevices(1);
+    public static AudioDevices OutputDevices { get; } =  new AudioDevices(0);
 
     public static unsafe void Init(string? driverName = null) {
       bool disableDrop = SDL.ShouldDisableDropAfterInit(InitFlags.Audio);
