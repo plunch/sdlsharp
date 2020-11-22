@@ -15,7 +15,7 @@ namespace SDLSharp {
 
     public static unsafe Version RuntimeVersion {
       get {
-        var v = IMG_LinkedVersion();
+        var v = IMG_Linked_Version();
         return new Version(v->major, v->minor, v->patch, 0);
       }
     }

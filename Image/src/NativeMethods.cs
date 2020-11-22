@@ -6,7 +6,7 @@ namespace SDLSharp {
   static unsafe class ImageNativeMethods {
 
     [DllImport("SDL2_image")]
-    public static extern /*const*/ SDL_Version* IMG_LinkedVersion();
+    public static extern /*const*/ SDL_Version* IMG_Linked_Version();
 
     [DllImport("SDL2_image")]
     public static extern Loaders IMG_Init(Loaders loaders);
