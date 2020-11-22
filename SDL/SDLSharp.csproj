@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+    <_Parameter1>SDLSharp_Image</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>
