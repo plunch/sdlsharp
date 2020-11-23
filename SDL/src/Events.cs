@@ -84,7 +84,7 @@ namespace SDLSharp {
           SDL_EventFilter f = (IntPtr ud, ref Event ev) => {
             try {
               return value(ref ev) ? 1 : 0;
-            } catch {
+            } catch (Exception e) {
               SDL.OnUnhandledException(e, true);
               return 1;
             }
