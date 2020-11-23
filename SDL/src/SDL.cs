@@ -7,6 +7,8 @@ using System.Runtime.ExceptionServices;
 namespace SDLSharp {
   public static class SDL {
     public static Hints Hints { get; } = new Hints();
+    internal static int eventObjCounter = 0;
+    internal static Dictionary<int, object> eventObjects = new  Dictionary<int, object>();
 
     public static void Init(InitFlags flags = InitFlags.Nothing) {
       bool disableDrop = ShouldDisableDropAfterInit(flags);
@@ -70,6 +72,14 @@ namespace SDLSharp {
       UnhandledException?.Invoke(e, new UnhandledExceptionEventArgs(e, fatal));
       if (fatal)
         Environment.FailFast("Unhandled exception in native callback", e);
+    }
+
+    public static bool IsObjectEvent(this in Event e, out object? o) {
+      if (e.type == EventType.UserEvent) {
+        return eventObjects.Remove((int)e.user.data1, out o);
+      }
+      o = null;
+      return false;
     }
   }
 }

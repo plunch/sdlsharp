@@ -43,8 +43,27 @@ namespace SDLSharp {
     public bool Has(EventType start, EventType end)
       => SDL_HasEvents((uint)start, (uint)end) == SDL_Bool.True;
 
+    public void Push(in QuitEvent ev)
+      => Push(new Event() { quit = ev, type = EventType.Quit });
+
+    public void Push(in UserEvent ev)
+      => Push(new Event() { user = ev, type = EventType.UserEvent });
+
+    public void Push(in SysWMEvent ev)
+      => Push(new Event() { syswm = ev, type = EventType.SysWMEvent });
+
     public bool Push(in Event ev) {
       return ErrorIfNegative(SDL_PushEvent(ev)) != 0;
+    }
+
+    public void Push(object obj) {
+      var id = System.Threading.Interlocked.Increment(ref SDL.eventObjCounter);
+      SDL.eventObjects.Add(id, obj);
+
+      Push(new UserEvent() {
+        type = EventType.UserEvent,
+        data1 = (IntPtr)id,
+      });
     }
 
     public unsafe int Push(
