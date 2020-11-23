@@ -268,6 +268,17 @@ namespace SDLSharp {
       public uint alen;
       public byte volume;
     }
+
+    public static bool PlayingResult(int res)  {
+      if (res == -1) {
+        var err =  GetError();
+        if (err != null && err.Message != "No free channels available")
+          throw err;
+        return false;
+      }
+      return true;
+    }
+
   }
 
   [Flags]

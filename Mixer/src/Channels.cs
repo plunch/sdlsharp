@@ -70,12 +70,12 @@ namespace SDLSharp {
       }
     }
 
-    public void Play(MixerChunk chunk, int maxLoops = 1, int maxMilliseconds = -1) {
-      ErrorIfNegative(Mix_PlayChannelTimed(-1, chunk, maxLoops-1, maxMilliseconds));
+    public bool Play(MixerChunk chunk, int maxLoops = 1, int maxMilliseconds = -1) {
+      return PlayingResult(Mix_PlayChannelTimed(-1, chunk, maxLoops-1, maxMilliseconds));
     }
 
-    public void FadeIn(MixerChunk chunk, int milliseconds, int maxLoops = 1, int maxMilliseconds = -1) {
-      ErrorIfNegative(Mix_FadeInChannelTimed(-1, chunk, maxLoops-1, milliseconds, maxMilliseconds));
+    public bool FadeIn(MixerChunk chunk, int milliseconds, int maxLoops = 1, int maxMilliseconds = -1) {
+      return PlayingResult(Mix_FadeInChannelTimed(-1, chunk, maxLoops-1, milliseconds, maxMilliseconds));
     }
 
     public void Pause() {

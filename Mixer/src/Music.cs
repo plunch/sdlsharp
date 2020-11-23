@@ -22,16 +22,16 @@ namespace SDLSharp {
     public Fading Fading => Mix_FadingMusic();
 
 
-    public void Play(MusicTrack track, int loops = -1) {
-      ErrorIfNegative(Mix_PlayMusic(track, loops));
+    public bool Play(MusicTrack track, int loops = -1) {
+      return PlayingResult(Mix_PlayMusic(track, loops));
     }
 
-    public void FadeIn(MusicTrack track, int milliseconds, int loops = -1) {
-      ErrorIfNegative(Mix_FadeInMusic(track, loops, milliseconds));
+    public bool FadeIn(MusicTrack track, int milliseconds, int loops = -1) {
+      return PlayingResult(Mix_FadeInMusic(track, loops, milliseconds));
     }
 
-    public void FadeIn(MusicTrack track, int milliseconds, double position, int loops = -1) {
-      ErrorIfNegative(Mix_FadeInMusicPos(track, loops, milliseconds, position));
+    public bool FadeIn(MusicTrack track, int milliseconds, double position, int loops = -1) {
+      return PlayingResult(Mix_FadeInMusicPos(track, loops, milliseconds, position));
     }
 
     public void Pause() {

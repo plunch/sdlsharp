@@ -32,12 +32,13 @@ namespace SDLSharp {
       return p == chunk.DangerousGetHandle();
     }
 
-    public void Play(MixerChunk chunk, int maxLoops = 1, int maxMilliseconds = -1) {
-      ErrorIfNegative(Mix_PlayChannelTimed(num, chunk, maxLoops-1, maxMilliseconds));
+
+    public bool Play(MixerChunk chunk, int maxLoops = 1, int maxMilliseconds = -1) {
+      return PlayingResult(Mix_PlayChannelTimed(num, chunk, maxLoops-1, maxMilliseconds));
     }
 
-    public void FadeIn(MixerChunk chunk, int milliseconds, int maxLoops = 1, int maxMilliseconds = -1) {
-      ErrorIfNegative(Mix_FadeInChannelTimed(num, chunk, maxLoops-1, milliseconds, maxMilliseconds));
+    public bool FadeIn(MixerChunk chunk, int milliseconds, int maxLoops = 1, int maxMilliseconds = -1) {
+      return PlayingResult(Mix_FadeInChannelTimed(num, chunk, maxLoops-1, milliseconds, maxMilliseconds));
     }
 
     public void Pause() {
