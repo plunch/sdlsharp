@@ -13,15 +13,26 @@ namespace sdlcstest
         {
             foreach (var ev in Events.Current)
             {
-                if (ev.type == EventType.Quit)
-                    Environment.Exit(0);
-                if (ev.type == EventType.KeyUp)
-                    if (ev.keyboard.keysym.keycode == Keycode.F3)
-                    {
-                        var wind = Window.CurrentlyGrabbingInput();
-                        if (wind != null)
-                            wind.IsGrabbingInput = false;
-                    }
+                switch (ev.type)
+                {
+                    case EventType.Quit:
+                        Environment.Exit(0);
+                        break;
+                    case EventType.UserEvent:
+                        if (ev.IsObjectEvent(out var obj)) {
+                          if (obj is Action a)
+                            a();
+                        }
+                        break;
+                    case EventType.KeyUp:
+                        if (ev.keyboard.keysym.keycode == Keycode.F3)
+                        {
+                            var wind = Window.CurrentlyGrabbingInput();
+                            if (wind != null)
+                                wind.IsGrabbingInput = false;
+                        }
+                        break;
+                }
                 //Console.WriteLine(ev.ToString());
             }
         }
@@ -32,10 +43,10 @@ namespace sdlcstest
               "Title",
               "Body text",
               new[] {
-              new MessageBoxButton(1, "One"),
-              new MessageBoxButton(2, "Escape me") { Key = MessageBoxButtonDefaultKey.Escape },
-              new MessageBoxButton(3, "Two"),
-              new MessageBoxButton(4, "OK") { Key = MessageBoxButtonDefaultKey.Return },
+                  new MessageBoxButton(1, "One"),
+                  new MessageBoxButton(2, "Escape me") { Key = MessageBoxButtonDefaultKey.Escape },
+                  new MessageBoxButton(3, "Two"),
+                  new MessageBoxButton(4, "OK") { Key = MessageBoxButtonDefaultKey.Return },
               },
               colorScheme: new MessageBoxColors()
               {
@@ -221,7 +232,7 @@ namespace sdlcstest
 
 
             PrintChannels();
-            Mixer.Channels.Count = 2;
+            Mixer.Channels.Count = 8;
             PrintChannels();
 
 
@@ -260,11 +271,18 @@ namespace sdlcstest
 
                 Console.WriteLine($"Created window {window}");
 
+                Mixer.Channels.ChannelFinished += (se, ev) => Console.WriteLine($"{ev.Channel} finished");
                 window.SetHitTest((Window w, in SDLSharp.Point p) =>
                 {
                     Console.WriteLine($"Hit test at {(System.Drawing.Point)p} in window '{w}'");
-                    Mixer.Channels.Play(alarm, 1);
-                    PrintChannels();
+                    Events.Current.Push((Action)(() =>
+                    {
+                        if (Mixer.Channels.Play(alarm, 1))
+                            Console.Write("Playing sound ");
+                        else
+                            Console.Write("NOT playing sound ");
+                        PrintChannels();
+                    }));
                     return HitTestResult.Normal;
                 });
 
