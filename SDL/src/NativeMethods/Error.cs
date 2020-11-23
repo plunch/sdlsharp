@@ -23,15 +23,15 @@ namespace SDLSharp {
         SDL_SetError(ptr, __arglist(ptr + SL(fmt)));
     }
 
-    public static Exception? GetError() {
+    public static SDLException? GetError() {
       var err = SDL_GetError();
       if (err == null || err[0] == 0)
         return null;
-      return new Exception(UTF8ToString(err));
+      return new SDLException(UTF8ToString(err)??"");
     }
 
-    public static Exception GetError2() {
-      return GetError() ?? new Exception("An error was expected, but there was none!");
+    public static SDLException GetError2() {
+      return GetError() ?? new SDLException("An error was expected, but there was none!");
     }
 
     public static void Throw() {
