@@ -4,6 +4,7 @@
     <ProjectReference Include="..\SDL\SDLSharp.csproj" />
     <ProjectReference Include="..\Image\SDLSharp_Image.csproj" />
     <ProjectReference Include="..\TTF\SDLSharp_TTF.csproj" />
+    <ProjectReference Include="..\Mixer\SDLSharp_Mixer.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

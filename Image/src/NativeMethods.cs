@@ -9,7 +9,7 @@ namespace SDLSharp {
     public static extern /*const*/ SDL_Version* IMG_Linked_Version();
 
     [DllImport("SDL2_image")]
-    public static extern Loaders IMG_Init(Loaders loaders);
+    public static extern ImageLoaders IMG_Init(ImageLoaders loaders);
 
     [DllImport("SDL2_image")]
     public static extern void IMG_Quit();
@@ -140,7 +140,7 @@ namespace SDLSharp {
     public static extern int IMG_SaveJPG_RW(Surface surface, RWOps dst, int freedst, int quality);
   }
 
-  public enum Loaders {
+  public enum ImageLoaders {
     JPG = 1,
     PNG = 2,
     TIF = 4,

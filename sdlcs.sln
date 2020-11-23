@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDLSharp", "SDL\SDLSharp.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDLSharp_TTF", "TTF\SDLSharp_TTF.csproj", "{E164CD5E-83E9-436D-B695-E2A2E067CCA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDLSharp_Mixer", "Mixer\SDLSharp_Mixer.csproj", "{6D772E88-4287-4C6E-BD72-D1DF87065BE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{E164CD5E-83E9-436D-B695-E2A2E067CCA6}.Release|x64.Build.0 = Release|Any CPU
 		{E164CD5E-83E9-436D-B695-E2A2E067CCA6}.Release|x86.ActiveCfg = Release|Any CPU
 		{E164CD5E-83E9-436D-B695-E2A2E067CCA6}.Release|x86.Build.0 = Release|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Debug|x64.Build.0 = Debug|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Release|x64.ActiveCfg = Release|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Release|x64.Build.0 = Release|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D772E88-4287-4C6E-BD72-D1DF87065BE1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

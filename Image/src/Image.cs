@@ -5,7 +5,7 @@ using static SDLSharp.ImageNativeMethods;
 
 namespace SDLSharp {
   public static class Image {
-    public static Loaders Init(Loaders loaders) {
+    public static ImageLoaders Init(ImageLoaders loaders) {
       return IMG_Init(loaders);
     }
 
@@ -20,7 +20,7 @@ namespace SDLSharp {
       }
     }
 
-    public static Loaders InitializedLoaders => IMG_Init((Loaders)0);
+    public static ImageLoaders InitializedLoaders => IMG_Init((ImageLoaders)0);
 
     public static unsafe Surface Load(RWOps src, string? type  = null) {
       if (type == null) {
