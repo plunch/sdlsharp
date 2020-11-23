@@ -100,7 +100,8 @@ namespace SDLSharp {
         del = (IntPtr ud, byte* name, byte* oldValue, byte* newValue) => {
           try {
             func(UTF8ToString(name)??"", UTF8ToString(oldValue), UTF8ToString(newValue));
-          } catch {
+          } catch (Exception e) {
+            SDL.OnUnhandledException(e, true);
           }
         };
         fp = Marshal.GetFunctionPointerForDelegate(del);

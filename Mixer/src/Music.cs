@@ -72,7 +72,8 @@ namespace SDLSharp {
         var sp = new Span<byte>(stream, length);
         try {
           player(sp);
-        } catch {
+        } catch (Exception e) {
+          SDL.OnUnhandledException(e, true);
         }
       };
       Mix_HookMusic(Marshal.GetFunctionPointerForDelegate(mp), IntPtr.Zero);
@@ -89,7 +90,9 @@ namespace SDLSharp {
           cb = () => {
             try {
               musicFinished?.Invoke(EventArgs.Empty, EventArgs.Empty);
-            } catch {}
+            } catch (Exception e) {
+              SDL.OnUnhandledException(e, true);
+            }
           };
           Mix_HookMusicFinished(Marshal.GetFunctionPointerForDelegate(cb));
         }

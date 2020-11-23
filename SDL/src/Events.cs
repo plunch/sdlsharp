@@ -33,7 +33,8 @@ namespace SDLSharp {
         del = (IntPtr ud, ref Event v) => {
           try {
             func(ref v);
-          } catch {
+          } catch (Exception e) {
+            SDL.OnUnhandledException(e, true);
           }
           return 1;
         };
@@ -84,6 +85,7 @@ namespace SDLSharp {
             try {
               return value(ref ev) ? 1 : 0;
             } catch {
+              SDL.OnUnhandledException(e, true);
               return 1;
             }
           };

@@ -13,7 +13,8 @@ namespace SDLSharp {
       SDL_TimerCallback cb = (uint iv, IntPtr param) => {
         try {
           return callback(iv);
-        } catch {
+        } catch (Exception e) {
+          SDL.OnUnhandledException(e, true);
           return 0;
         }
       };

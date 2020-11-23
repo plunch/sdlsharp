@@ -64,5 +64,12 @@ namespace SDLSharp {
       Events.Ignore[EventType.DropBegin] = true;
       Events.Ignore[EventType.DropComplete] = true;
     }
+
+    public static event EventHandler<UnhandledExceptionEventArgs>? UnhandledException;
+    internal static void OnUnhandledException(Exception e, bool fatal) {
+      UnhandledException?.Invoke(e, new UnhandledExceptionEventArgs(e, fatal));
+      if (fatal)
+        Environment.FailFast("Unhandled exception in native callback", e);
+    }
   }
 }

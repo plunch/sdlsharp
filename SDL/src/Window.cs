@@ -277,7 +277,8 @@ namespace SDLSharp
         ht = (IntPtr w, in Point p, IntPtr data) => {
           try {
             return test(this, p);
-          } catch {
+          } catch (Exception e) {
+            SDL.OnUnhandledException(e, true);
             return HitTestResult.Normal;
           }
         };
