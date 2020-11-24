@@ -7,7 +7,10 @@ namespace SDLSharp {
     public static extern /*const*/byte* SDL_GetError();
 
     [DllImport("SDL2")]
-    public static extern int SDL_SetError(/*const char*/ byte* fmt, __arglist);
+    public static extern byte* SDL_GetErrorMsg(byte* output, int maxlen);
+
+    [DllImport("SDL2")]
+    public static extern int SDL_SetError(/*const char*/ byte* fmt/*, __arglist*/);
 
     [DllImport("SDL2")]
     public static extern void SDL_ClearError();
@@ -16,18 +19,34 @@ namespace SDLSharp {
       SetError(ex.ToString());
     }
 
+    static bool getErrorMsgAvailable = true;
+    private static unsafe string? GetErrorStr() {
+      if (getErrorMsgAvailable) {
+        try {
+        Span<byte> buf = stackalloc byte[4096];
+        buf[0] = 0;
+        fixed(byte* p = buf)
+          SDL_GetErrorMsg(p, buf.Length);
+        return System.Text.Encoding.UTF8.GetString(buf.Slice(0, buf.IndexOf((byte)0)));
+        }catch(EntryPointNotFoundException) {
+          getErrorMsgAvailable = false;
+        }
+      } 
+      return UTF8ToString(SDL_GetError());
+    }
+
     public static unsafe void SetError(string error) {
-      const string fmt = "%s";
-      Span<byte> buf = stackalloc byte[SL(fmt) + SL(error)];
+      error = error.Replace("%", "%%");
+      Span<byte> buf = stackalloc byte[SL(error)];
       fixed(byte* ptr = buf)
-        SDL_SetError(ptr, __arglist(ptr + SL(fmt)));
+        SDL_SetError(ptr);
     }
 
     public static SDLException? GetError() {
-      var err = SDL_GetError();
-      if (err == null || err[0] == 0)
+      var err = GetErrorStr();
+      if (err == null || err == "")
         return null;
-      return new SDLException(UTF8ToString(err)??"");
+      return new SDLException(err);
     }
 
     public static SDLException GetError2() {

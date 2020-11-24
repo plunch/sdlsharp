@@ -72,6 +72,11 @@ namespace sdlcstest
         static void Main(string[] args)
         {
             SDL.Init(InitFlags.Everything);
+            Log.Priorities.SetAll(LogPriority.Verbose);
+            Log.OutputFunction = (cat, prio, msg) => {
+              Console.WriteLine($"[{prio}] {cat}: {msg}");
+            };
+            Log.Message(LogCategory.Application, LogPriority.Debug, "Foo and bar!?");
             TTF.Init();
             Events.Watch += (ref Event e) =>
             {
