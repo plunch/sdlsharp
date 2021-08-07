@@ -391,8 +391,8 @@ namespace SDLSharp
         public static int UndefinedPosition => WINDOWPOS_UNDEFINED;
         public static int CenteredPosition => WINDOWPOS_CENTERED;
 
-        public static Window Create(string title, in Point p, WindowFlags flags = WindowFlags.None)
-          => Create(title, p.x, p.y, flags);
+        public static Window Create(string title, in Size s, WindowFlags flags = WindowFlags.None)
+          => Create(title, s.Width, s.Height, flags);
 
         public static Window Create(string title, in Rect p, WindowFlags flags = WindowFlags.None)
           => Create(title, p.x, p.y, p.w, p.h, flags);
