@@ -425,6 +425,13 @@ namespace SDLSharp
         );
 
         [DllImport("SDL2")]
+        public static extern int SDL_RenderSetViewport(
+          Renderer renderer,
+          IntPtr rect
+        );
+
+
+        [DllImport("SDL2")]
         public static extern SDL_Bool SDL_RenderTargetSupported(
           Renderer renderer
         );

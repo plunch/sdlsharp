@@ -138,9 +138,9 @@ namespace SDLSharp
             set
             {
                 if (Rect.IsEmpty(value))
-                    ErrorIfNegative(SDL_RenderSetClipRect(this, IntPtr.Zero));
+                    ErrorIfNegative(SDL_RenderSetViewport(this, IntPtr.Zero));
                 else
-                    ErrorIfNegative(SDL_RenderSetClipRect(this, value));
+                    ErrorIfNegative(SDL_RenderSetViewport(this, value));
             }
         }
 
