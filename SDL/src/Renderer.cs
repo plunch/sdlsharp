@@ -296,6 +296,16 @@ namespace SDLSharp
                 ErrorIfNegative(SDL_RenderDrawRects(this, ptr, rect.Length));
         }
 
+        public void FillRect(int x, int y, int w, int h)
+        {
+            Rect r;
+            r.x = x;
+            r.y = y;
+            r.w = w;
+            r.h = h;
+            FillRect(r);
+        }
+
         public void FillRect(Rect rect)
         {
             SDL_RenderFillRect(this, rect);
