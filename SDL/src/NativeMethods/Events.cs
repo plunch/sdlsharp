@@ -481,13 +481,12 @@ namespace SDLSharp
         public uint timestamp;
         public uint windowID;
         public uint which;
-        public uint state;
         public int x, y;
         public MouseWheelDirection direction;
 
         public override string ToString()
         {
-            return $"[{type}(ts={timestamp},w={windowID}),which={which},direction={direction},state={state},xy=({x},{y})]";
+            return $"[{type}(ts={timestamp},w={windowID}),which={which},direction={direction},xy=({x},{y})]";
         }
     }
 
