@@ -77,7 +77,12 @@ namespace SDLSharp
             }
             try
             {
-                var ret = Implementation.Seek(offset, whence);
+                long ret;
+                if (whence == 1) {
+                    ret = Implementation.Seek(offset - partial.Count, whence);
+                } else {
+                    ret = Implementation.Seek(offset, whence);
+                }
                 if (ret >= 0)
                     partial = partial.Slice(0, 0);
                 return ret;
